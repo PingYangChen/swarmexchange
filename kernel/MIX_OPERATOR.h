@@ -58,6 +58,33 @@ double MIX_OPERATOR(const int &MIX_PROC, arma::mat &MIX, const arma::mat &DESIGN
 				uword ADD_WHO;
 				if (maximize == 0) MIX_VAL = valVec.min(ADD_WHO); else MIX_VAL = valVec.max(ADD_WHO);
 				MIX.col(DELETE_WHO) = DESIGN_B.col(ADD_WHO);
+				// Use CP-algorithm
+				arma::uvec lab_one = arma::find(MIX.col(DELETE_WHO) == D_INFO.labLevel(0));
+				arma::uvec lab_two = arma::find(MIX.col(DELETE_WHO) == D_INFO.labLevel(1));
+				arma::mat ADJ_DESIGN = MIX; double ADJ_VAL;
+				arma::umat PAIR_CAND(lab_one.n_elem*lab_two.n_elem, 2);
+				arma::vec ADJ_VAL_VEC(lab_one.n_elem*lab_two.n_elem);
+				double count = 0;
+				for (uword i = 0; i < lab_one.n_elem; i++) {
+					for (uword j = 0; j < lab_two.n_elem; j++) {
+						ADJ_DESIGN = MIX;
+						ADJ_DESIGN(lab_one(i), DELETE_WHO) = D_INFO.labLevel(1);
+						ADJ_DESIGN(lab_two(j), DELETE_WHO) = D_INFO.labLevel(0);
+						DESIGNCRITERION(ADJ_VAL, ADJ_DESIGN, D_INFO, -1);
+						PAIR_CAND(count, 0) = lab_one(i);
+						PAIR_CAND(count, 1) = lab_two(j);
+						ADJ_VAL_VEC(count) = ADJ_VAL;
+						count++;
+					}
+				}
+				uword SELECT_PAIR;
+				if (maximize == 0) ADJ_VAL = ADJ_VAL_VEC.min(SELECT_PAIR); else ADJ_VAL = ADJ_VAL_VEC.max(SELECT_PAIR);
+				if (((maximize == 0) & (ADJ_VAL <= MIX_VAL)) | ((maximize != 0) & (ADJ_VAL >= MIX_VAL))) {
+					MIX(PAIR_CAND(SELECT_PAIR, 0), DELETE_WHO) = D_INFO.labLevel(1);
+					MIX(PAIR_CAND(SELECT_PAIR, 1), DELETE_WHO) = D_INFO.labLevel(0);
+					MIX_VAL = ADJ_VAL;
+				}
+				//
 			}
 			break;
 		}

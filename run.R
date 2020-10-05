@@ -23,11 +23,13 @@ designInfo <- rGetDesignInfo(typeCrit = 1, n = 12, m = 4,
                              balance = 1)
 
 # Set SIDD algorithm
-algInfo <- rGetAlgInfo(nSwarm = 32, maxIter = 100, PSO_UPDATE = 2,  
+algInfo <- rGetAlgInfo(nSwarm = 32, maxIter = 100, PSO_UPDATE = 0,  
                        JFO_R0 = 0.9, JFO_R1 = 0.3, MIX_C = 1, MIX_R = 0)
 # Run SIDD algorithm
 res <- rDiscreteDesignPSO(algInfo, designInfo, if_parallel = TRUE, seed = NULL, verbose = TRUE)
 names(res)
+
+res$RES$fGBest
 
 # Set Columnwise-Pairwise (CP) algorithm
 cpAlgInfo <- rGetColPairInfo(maxIter = 100, nTry = 32, CPk = 1)

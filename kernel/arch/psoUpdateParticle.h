@@ -9,23 +9,7 @@ void psoUpdateParticle(const DESIGN_INFO &D_INFO, const PSO_OPTIONS &PSO_OPTS, c
 	int nRun = D_INFO.nRun;
 	int iSwarm;
 	switch (PSO_UPDATE) {
-		case 0: // PSE
-		{
-			#pragma omp parallel private(iSwarm) 
-			{
-				#pragma omp for
-				for (iSwarm = 0; iSwarm < nSwarm; iSwarm++) {
-					arma::mat DESIGN = swarm.rows(iSwarm*nRun, (iSwarm + 1)*nRun - 1);
-					arma::mat tmpPBest = PBest.rows(iSwarm*nRun, (iSwarm + 1)*nRun - 1);
-					double DESIGN_VAL = fSwarm(iSwarm);
-					UPDATE_PSE(DESIGN, DESIGN_VAL, GBest, tmpPBest, maximize, D_INFO, PSO_OPTS, PSO_DYN);
-					swarm.rows(iSwarm*nRun, (iSwarm + 1)*nRun - 1) = DESIGN;
-					fSwarm(iSwarm) = DESIGN_VAL;
-				}
-			}
-		break;
-		}
-		case 9: // JFO
+		case 0: // JFO
 		{
 			#pragma omp parallel private(iSwarm) 
 			{
@@ -41,7 +25,55 @@ void psoUpdateParticle(const DESIGN_INFO &D_INFO, const PSO_OPTIONS &PSO_OPTS, c
 			}
 		break;
 		}
-		case 99: // RAND
+		case 1: // AJFO
+		{
+			#pragma omp parallel private(iSwarm) 
+			{
+				#pragma omp for
+				for (iSwarm = 0; iSwarm < nSwarm; iSwarm++) {
+					arma::mat DESIGN = swarm.rows(iSwarm*nRun, (iSwarm + 1)*nRun - 1);
+					arma::mat tmpPBest = PBest.rows(iSwarm*nRun, (iSwarm + 1)*nRun - 1);
+					double tmpfPBest = fPBest(iSwarm); double DESIGN_VAL = fSwarm(iSwarm);
+					UPDATE_AJFO(DESIGN, DESIGN_VAL, GBest, fGBest, tmpPBest, tmpfPBest, maximize, D_INFO, PSO_OPTS, PSO_DYN);
+					swarm.rows(iSwarm*nRun, (iSwarm + 1)*nRun - 1) = DESIGN;
+					fSwarm(iSwarm) = DESIGN_VAL;
+				}
+			}
+		break;
+		}
+		case 2: // HJE
+		{
+			#pragma omp parallel private(iSwarm) 
+			{
+				#pragma omp for
+				for (iSwarm = 0; iSwarm < nSwarm; iSwarm++) {
+					arma::mat DESIGN = swarm.rows(iSwarm*nRun, (iSwarm + 1)*nRun - 1);
+					arma::mat tmpPBest = PBest.rows(iSwarm*nRun, (iSwarm + 1)*nRun - 1);
+					double DESIGN_VAL = fSwarm(iSwarm);
+					UPDATE_HJE(DESIGN, DESIGN_VAL, GBest, tmpPBest, maximize, D_INFO, PSO_OPTS, PSO_DYN);
+					swarm.rows(iSwarm*nRun, (iSwarm + 1)*nRun - 1) = DESIGN;
+					fSwarm(iSwarm) = DESIGN_VAL;
+				}
+			}
+		break;
+		}
+		case 3: // AHJE
+		{
+			#pragma omp parallel private(iSwarm) 
+			{
+				#pragma omp for
+				for (iSwarm = 0; iSwarm < nSwarm; iSwarm++) {
+					arma::mat DESIGN = swarm.rows(iSwarm*nRun, (iSwarm + 1)*nRun - 1);
+					arma::mat tmpPBest = PBest.rows(iSwarm*nRun, (iSwarm + 1)*nRun - 1);
+					double tmpfPBest = fPBest(iSwarm); double DESIGN_VAL = fSwarm(iSwarm);
+					UPDATE_AHJE(DESIGN, DESIGN_VAL, GBest, fGBest, tmpPBest, tmpfPBest, maximize, D_INFO, PSO_OPTS, PSO_DYN);
+					swarm.rows(iSwarm*nRun, (iSwarm + 1)*nRun - 1) = DESIGN;
+					fSwarm(iSwarm) = DESIGN_VAL;
+				}
+			}
+		break;
+		}
+		case 4: // RAND
 		{
 			#pragma omp parallel private(iSwarm) 
 			{
@@ -56,7 +88,7 @@ void psoUpdateParticle(const DESIGN_INFO &D_INFO, const PSO_OPTIONS &PSO_OPTS, c
 			}
 		break;
 		}
-		case 10 ... 19: // CSO
+		case 10 ... 13: // CSO
 		{
 			arma::mat GMean(GBest.n_rows, GBest.n_cols);
 			imat rSwarm = arma::randi(GBest.n_rows, GBest.n_cols, distr_param(0, nSwarm - 1));
@@ -95,12 +127,22 @@ void psoUpdateParticle(const DESIGN_INFO &D_INFO, const PSO_OPTIONS &PSO_OPTS, c
 					switch (tmpUPDATE) {
 						case 0:
 						{
-							UPDATE_PSE(DESIGN, DESIGN_VAL, GMean, DESIGN_WIN, maximize, D_INFO, PSO_OPTS, PSO_DYN);
+							UPDATE_JFO(DESIGN, DESIGN_VAL, GMean, DESIGN_WIN, maximize, D_INFO, PSO_OPTS, PSO_DYN);
 							break;
 						}
-						case 9:
+						case 1:
 						{
-							UPDATE_JFO(DESIGN, DESIGN_VAL, GMean, DESIGN_WIN, maximize, D_INFO, PSO_OPTS, PSO_DYN);
+							UPDATE_AJFO(DESIGN, DESIGN_VAL, GMean, fGBest, DESIGN_WIN, WINNER_VAL, maximize, D_INFO, PSO_OPTS, PSO_DYN);
+							break;
+						}
+						case 2:
+						{
+							UPDATE_HJE(DESIGN, DESIGN_VAL, GMean, DESIGN_WIN, maximize, D_INFO, PSO_OPTS, PSO_DYN);
+							break;
+						}
+						case 3:
+						{
+							UPDATE_AHJE(DESIGN, DESIGN_VAL, GMean, fGBest, DESIGN_WIN, WINNER_VAL, maximize, D_INFO, PSO_OPTS, PSO_DYN);
 							break;
 						}
 					}
