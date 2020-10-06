@@ -27,7 +27,15 @@ arma::mat DESIGNCRITERION(double &DESIGN_VAL, const mat &DESIGN, const DESIGN_IN
 				arma::mat Xj = getModelMatrix(DESIGN, D_INFO.modelIndices.slice(j), D_INFO);
 				arma::mat XXj = Xj.t() * Xj;
 				if (arma::rcond(XXj) > 1e-18) {
-					arma::mat IminusHj = EYE - (Xj * (XXj.i()) * Xj.t());
+					arma::mat IminusHj(DESIGN.n_rows, DESIGN.n_rows, fill::zeros);
+					try
+    			{
+						IminusHj = EYE - (Xj * (XXj.i()) * Xj.t());
+					}
+					catch (std::exception& e)
+    			{
+    				break;
+    			}
 					for (int i = 0; i < nModel; i++) {
 						if (i != j) {
 							double pij; 
@@ -54,12 +62,28 @@ arma::mat DESIGNCRITERION(double &DESIGN_VAL, const mat &DESIGN, const DESIGN_IN
 				arma::mat Xi = getModelMatrix(DESIGN, D_INFO.modelIndices.slice(i), D_INFO);
 				arma::mat XXi = Xi.t() * Xi;
 				if (arma::rcond(XXi) > 1e-18) {
-					arma::mat Hi = Xi * (XXi.i()) * Xi.t();
+					arma::mat Hi(DESIGN.n_rows, DESIGN.n_rows, fill::zeros);
+					try
+    			{
+						Hi = Xi * (XXi.i()) * Xi.t();
+					}
+					catch (std::exception& e)
+    			{
+    				break;
+    			}
 					for (int j = 0; j < i; j++) {
 						arma::mat Xj = getModelMatrix(DESIGN, D_INFO.modelIndices.slice(j), D_INFO);
 						arma::mat XXj = Xj.t() * Xj;
 						if (arma::rcond(XXj) > 1e-18) {
-							arma::mat HiMinusHj = Hi - (Xj * (XXj.i()) * Xj.t());
+							arma::mat HiMinusHj(DESIGN.n_rows, DESIGN.n_rows, fill::zeros);
+							try
+		    			{
+								HiMinusHj = Hi - (Xj * (XXj.i()) * Xj.t());
+							}
+							catch (std::exception& e)
+		    			{
+		    				break;
+		    			}
 							arma::mat Dij = HiMinusHj * HiMinusHj;
 							double trD = arma::trace(Dij);
 							if (trD > 0) valMat(i,j) = trD/nRun_double;
@@ -77,7 +101,15 @@ arma::mat DESIGNCRITERION(double &DESIGN_VAL, const mat &DESIGN, const DESIGN_IN
 				arma::mat Xj = getModelMatrix(DESIGN, D_INFO.modelIndices.slice(j), D_INFO);
 				arma::mat XXj = Xj.t() * Xj;
 				if (arma::rcond(XXj) > 1e-18) {
-					arma::mat IminusHj = EYE - (Xj * (XXj.i()) * Xj.t());
+					arma::mat IminusHj(DESIGN.n_rows, DESIGN.n_rows, fill::zeros);
+					try
+    			{
+						IminusHj = EYE - (Xj * (XXj.i()) * Xj.t());
+					}
+					catch (std::exception& e)
+    			{
+    				break;
+    			}
 					for (int i = 0; i < nModel; i++) {
 						if (i != j) {
 							double pij; 
@@ -99,7 +131,15 @@ arma::mat DESIGNCRITERION(double &DESIGN_VAL, const mat &DESIGN, const DESIGN_IN
 				arma::mat Xj = getModelMatrix(DESIGN, D_INFO.modelIndices.slice(j), D_INFO);
 				arma::mat XXj = Xj.t() * Xj;
 				if (arma::rcond(XXj) > 1e-18) {
-					arma::mat IminusHj = EYE - (Xj * (XXj.i()) * Xj.t());
+					arma::mat IminusHj(DESIGN.n_rows, DESIGN.n_rows, fill::zeros);
+					try
+    			{
+						IminusHj = EYE - (Xj * (XXj.i()) * Xj.t());
+					}
+					catch (std::exception& e)
+    			{
+    				break;
+    			}
 					for (int i = 0; i < nModel; i ++) {
 						if (i != j) {
 							double pij; 

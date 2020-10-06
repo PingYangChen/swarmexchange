@@ -9,9 +9,9 @@ void CoorExchange_MAIN(Ptr_CE_Result Ptr_CE_Result, const CE_OPTIONS &CE_OPTS, c
   int maximize 	= CE_OPTS.maximize;
   double tol 		= CE_OPTS.tol;
 	
-	int nRun = D_INFO.nRun;
-	int nFactor = D_INFO.nFactor;
-	int nLevel = (int)D_INFO.labLevel.n_elem;
+  int nRun = D_INFO.nRun;
+  int nFactor = D_INFO.nFactor;
+  int nLevel = (int)D_INFO.labLevel.n_elem;
 	
   arma::mat DESIGN_POOL(nTry*nRun, nFactor);
   arma::vec DESIGN_VAL_POOL(nTry);
@@ -64,6 +64,7 @@ void CoorExchange_MAIN(Ptr_CE_Result Ptr_CE_Result, const CE_OPTIONS &CE_OPTS, c
 				}*/
 				for (row_i = 0; row_i < nRun; row_i++) {
 					for (col_j = 0; col_j < nFactor; col_j++) {
+						/*
 						DESIGN_VAL_COMP.zeros();
 						for (level_k = 0; level_k < nLevel; level_k++) {
 							DESIGN_TMP = DESIGN;
@@ -77,6 +78,8 @@ void CoorExchange_MAIN(Ptr_CE_Result Ptr_CE_Result, const CE_OPTIONS &CE_OPTS, c
 						}
 						if (maximize == 0) DESIGN_VAL = DESIGN_VAL_COMP.min(EXCHANGE); else DESIGN_VAL = DESIGN_VAL_COMP.max(EXCHANGE);
 						DESIGN(row_i, col_j) = D_INFO.labLevel(EXCHANGE);
+						*/
+						DESIGN = CoorExchange_CORE(DESIGN, DESIGN_VAL, D_INFO, row_i, col_j, maximize);
 					}
 				}
 				//Rprintf("%d, %d\n", iTry, t);

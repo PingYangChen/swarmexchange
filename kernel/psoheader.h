@@ -101,14 +101,17 @@ void psoUpdateParticle(const DESIGN_INFO &D_INFO, const PSO_OPTIONS &PSO_OPTS, c
 void psoUpdateDynPara(const PSO_OPTIONS &PSO_OPTS, const int iter, PSO_DYN &PSO_DYN);
 void initDesigns(arma::mat &DESIGN_POOL, const DESIGN_INFO &D_INFO);
 
+arma::mat CoorExchange_CORE(arma::mat DESIGN, double DESIGN_VAL, const DESIGN_INFO &D_INFO);
 void getCoorExStruct(Ptr_CE_OPTIONS Ptr_CE_OPT, const Rcpp::List &CE_INFO_LIST);
 void CoorExchange_MAIN(Ptr_CE_Result Ptr_CE_Result, const CE_OPTIONS &CE_OPTS, const DESIGN_INFO &D_INFO, bool VERBOSE);
 
+arma::mat ColumnPair_CORE(arma::mat DESIGN, double &DESIGN_VAL, const DESIGN_INFO &D_INFO, int col_j, int maximize);
 void getColumnPairStruct(Ptr_CP_OPTIONS Ptr_CP_OPT, const Rcpp::List &CP_INFO_LIST);
 void ColumnPair_MAIN(Ptr_CP_Result Ptr_CP_Result, const CP_OPTIONS &CP_OPTS, const DESIGN_INFO &D_INFO, bool VERBOSE);
 
 // INCLUDE SUBFUNCTIONS
 #include "designCriterion.h"
+#include "exchangeAlgCore.h" 
 #include "MIX_OPERATOR.h"
 #include "UPDATE_JFO.h"
 #include "UPDATE_PSE.h"

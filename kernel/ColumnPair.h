@@ -92,8 +92,10 @@ void ColumnPair_MAIN(Ptr_CP_Result Ptr_CP_Result, const CP_OPTIONS &CP_OPTS, con
 
 				// Pairwise-Exchange
 				for (int k = 0; k < CPk; k++) {
-					ADJUST_WHO = ADJUST_ORDER(k);
 					
+					ADJUST_WHO = ADJUST_ORDER(k);
+					DESIGN = ColumnPair_CORE(DESIGN, DESIGN_VAL, D_INFO, ADJUST_WHO, maximize);
+					/*
 					arma::uvec lab_one = arma::find(DESIGN.col(ADJUST_WHO) == D_INFO.labLevel(0));
 					arma::uvec lab_two = arma::find(DESIGN.col(ADJUST_WHO) == D_INFO.labLevel(1));
 					
@@ -120,6 +122,7 @@ void ColumnPair_MAIN(Ptr_CP_Result Ptr_CP_Result, const CP_OPTIONS &CP_OPTS, con
 						DESIGN(PAIR_CAND(SELECT_PAIR, 1), ADJUST_WHO) = D_INFO.labLevel(0);
 						arma::mat DESIGN_VAL_MAT = DESIGNCRITERION(DESIGN_VAL, DESIGN, D_INFO, -1);		
 					}
+					*/
 				}
 				// RECORDING THE CURRENT VALUE
 				fvalHist(t+1) = DESIGN_VAL; 

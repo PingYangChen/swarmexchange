@@ -18,8 +18,8 @@ source(file.path(kernelPath, "rLaunchTools.r"))
 
 ### Balanced Design ###
 # The example runs for the balanced design of n = 12, m = 4 for MEPI space with g = 1.
-designInfo <- rGetDesignInfo(typeCrit = 1, n = 12, m = 4, 
-                             mSpName = "MEPI", g = 1,
+designInfo <- rGetDesignInfo(typeCrit = 1, n = 16, m = 4, 
+                             mSpName = "MEPI", g = 2,
                              balance = 1)
 
 # Set SIDD algorithm
