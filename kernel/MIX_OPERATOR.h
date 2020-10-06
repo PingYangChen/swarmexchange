@@ -105,7 +105,7 @@ double MIX_OPERATOR(const int &MIX_PROC, arma::mat &MIX, const arma::mat &DESIGN
 			if (PSO_OPTS.HYBRIDEXALG == 1) {
 				// Use Coordinate Exchange
 				for (int col_j = 0; col_j < (int)MIX.n_cols; col_j++) {
-					MIX = CoorExchange_CORE(MIX, MIX_VAL, D_INFO, col_j, DELETE_WHO, maximize);
+					MIX = CoorExchange_CORE(MIX, MIX_VAL, D_INFO, DELETE_WHO, col_j, maximize);
 				}
 			}
 			break;

@@ -69,7 +69,8 @@ typedef struct {
   double fGBest;
   arma::rowvec fGBestHist;
   arma::mat PBest;
-  arma::vec fPBest;	
+  arma::vec fPBest;
+  arma::mat fPBestHist;	
 	arma::imat updateRec;
 	//arma::mat JumpProb;
 } PSO_Result, *Ptr_PSO_Result;

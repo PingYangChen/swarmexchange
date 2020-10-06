@@ -8,7 +8,7 @@ arma::imat getDiffIdx(double &pij, const imat &MODEL_I, const imat &MODEL_J);
 // BODY
 arma::mat DESIGNCRITERION(double &DESIGN_VAL, const mat &DESIGN, const DESIGN_INFO &D_INFO, int typeCrit)
 {
-	DESIGN_VAL = 0;
+	DESIGN_VAL = -1e20;
 	int nModel = D_INFO.nModel;
 	double nModel_double = (double)D_INFO.nModel;
 	arma::mat EYE = arma::eye<arma::mat>(DESIGN.n_rows, DESIGN.n_rows);
@@ -29,9 +29,7 @@ arma::mat DESIGNCRITERION(double &DESIGN_VAL, const mat &DESIGN, const DESIGN_IN
 				if (arma::rcond(XXj) < 1e-18) { break; }
 				arma::mat XXjInv(XXj.n_rows, XXj.n_rows, fill::zeros);
 				IS_NONSINGULAR = arma::inv(XXjInv, XXj);
-				if (!IS_NONSINGULAR) {
-  				break;
-				}
+				if (!IS_NONSINGULAR) { break; }
   			arma::mat IminusHj = EYE - (Xj * XXjInv * Xj.t());
 				for (int i = 0; i < nModel; i++) {
 					if (i != j) {
@@ -60,9 +58,7 @@ arma::mat DESIGNCRITERION(double &DESIGN_VAL, const mat &DESIGN, const DESIGN_IN
 				if (arma::rcond(XXi) < 1e-18) { break; }
 				arma::mat XXiInv(XXi.n_rows, XXi.n_rows, fill::zeros);
 				IS_NONSINGULAR = arma::inv(XXiInv, XXi);
-				if (!IS_NONSINGULAR) {
-  				break;
-				}
+				if (!IS_NONSINGULAR) { break; }
 				arma::mat Hi = Xi * XXiInv * Xi.t();
 				for (int j = 0; j < i; j++) {
 					arma::mat Xj = getModelMatrix(DESIGN, D_INFO.modelIndices.slice(j), D_INFO);
@@ -70,9 +66,7 @@ arma::mat DESIGNCRITERION(double &DESIGN_VAL, const mat &DESIGN, const DESIGN_IN
 					if (arma::rcond(XXj) < 1e-18) { break; }
 					arma::mat XXjInv(XXj.n_rows, XXj.n_rows, fill::zeros);
 					IS_NONSINGULAR = arma::inv(XXjInv, XXj);
-					if (!IS_NONSINGULAR) {
-	  				break;
-					}
+					if (!IS_NONSINGULAR) { break; }
 					arma::mat HiMinusHj = Hi - (Xj * XXjInv * Xj.t());
 					arma::mat Dij = HiMinusHj * HiMinusHj;
 					double trD = arma::trace(Dij);

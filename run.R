@@ -18,8 +18,8 @@ source(file.path(kernelPath, "rLaunchTools.r"))
 
 ### Balanced Design ###
 # The example runs for the balanced design of n = 12, m = 4 for MEPI space with g = 1.
-designInfo <- rGetDesignInfo(typeCrit = 1, n = 12, m = 4, 
-                             mSpName = "MEPI", g = 1,
+designInfo <- rGetDesignInfo(typeCrit = 1, n = 20, m = 7, 
+                             mSpName = "MEPI", g = 2,
                              balance = 1)
 
 # Set SIDD algorithm
@@ -27,10 +27,17 @@ algInfo <- rGetAlgInfo(nSwarm = 32, maxIter = 100, PSO_UPDATE = 0,
                        JFO_R0 = 0.9, JFO_R1 = 0.3, MIX_C = 1, MIX_R = 0,
                        HYBRIDEXALG = 1)
 # Run SIDD algorithm
-res <- rDiscreteDesignPSO(algInfo, designInfo, if_parallel = TRUE, seed = NULL, verbose = TRUE)
+res <- rDiscreteDesignPSO(algInfo, designInfo, if_parallel = TRUE, 
+                          seed = 1, verbose = TRUE)
 names(res)
 
 res$RES$fGBest
+res$RES$fPBest
+res$RES$fGBestHist
+res$RES$fPBestHist
+
+res$RES$fPBestHist[,1:5]
+res$RES$fPBestHist[,ncol(res$RES$fPBestHist)]
 
 # Set Columnwise-Pairwise (CP) algorithm
 cpAlgInfo <- rGetColPairInfo(maxIter = 100, nTry = 32, CPk = 1)
@@ -46,11 +53,14 @@ designInfo <- rGetDesignInfo(typeCrit = 1, n = 12, m = 4,
                              balance = 0)
 
 # Set SIDD algorithm
-algInfo <- rGetAlgInfo(nSwarm = 32, maxIter = 100, PSO_UPDATE = 2,  
-                       JFO_R0 = 0.9, JFO_R1 = 0.3, MIX_C = 1, MIX_R = 1)
+algInfo <- rGetAlgInfo(nSwarm = 32, maxIter = 100, PSO_UPDATE = 0,  
+                       JFO_R0 = 0.9, JFO_R1 = 0.3, MIX_C = 1, MIX_R = 1,
+                       HYBRIDEXALG = 1)
 # Run SIDD algorithm
 res <- rDiscreteDesignPSO(algInfo, designInfo, if_parallel = TRUE, seed = NULL, verbose = TRUE)
 names(res)
+
+res$RES$fGBest
 
 # Set JFO algorithm
 jfoAlgInfo <- rGetAlgInfo(nSwarm = 32, maxIter = 100, PSO_UPDATE = 0,  
@@ -65,3 +75,5 @@ ceAlgInfo <- rGetCoorExInfo(maxIter = 100, nTry = 32)
 ceRes <- rDiscreteDesignCoorEx(ceAlgInfo, designInfo, if_parallel = TRUE, seed = NULL, verbose = TRUE)
 names(ceRes)
 
+ceRes$RES$DESIGN
+ceRes$RES$DESIGN_VAL

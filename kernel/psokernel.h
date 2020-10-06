@@ -19,6 +19,7 @@ void PSO_MAIN(Ptr_PSO_Result Ptr_PSO_Result, const PSO_OPTIONS &PSO_OPTS, const 
   double fGBest;
   arma::uword GBestIdx;
   arma::rowvec fGBestHist(maxIter + 1); fGBestHist.zeros();
+  arma::mat fPBestHist(nSwarm, maxIter + 1); fPBestHist.zeros();
 	PSO_DYN PSO_DYN;
 	
 	//arma::imat updateRec(nSwarm, maxIter);
@@ -55,6 +56,7 @@ void PSO_MAIN(Ptr_PSO_Result Ptr_PSO_Result, const PSO_OPTIONS &PSO_OPTS, const 
   if (maximize == 0) fGBest = fPBest.min(GBestIdx); else fGBest = fPBest.max(GBestIdx);	
 	GBest = PBest.rows(GBestIdx*nRun, (GBestIdx + 1)*nRun - 1);	
 	fGBestHist(0) = fGBest;
+  fPBestHist.col(0) = fPBest;
 	
 	if (VERBOSE) Rprintf("DONE \n"); 
 	
@@ -98,6 +100,7 @@ void PSO_MAIN(Ptr_PSO_Result Ptr_PSO_Result, const PSO_OPTIONS &PSO_OPTS, const 
     psoUpdateDynPara(PSO_OPTS, t, PSO_DYN);
     // RECORDING THE CURRENT GLOBAL BEST VALUE
     fGBestHist(t+1) = fGBest; 
+    fPBestHist.col(t+1) = fPBest;
 		//if ((t*2 >= maxIter) && (tol > 0)) {
 		if (tol > 0) {	
       //if (std::abs(fGBest - fGBestHist(t)) < tol) t = maxIter;
@@ -110,6 +113,7 @@ void PSO_MAIN(Ptr_PSO_Result Ptr_PSO_Result, const PSO_OPTIONS &PSO_OPTS, const 
   Ptr_PSO_Result->fGBestHist = fGBestHist;
   Ptr_PSO_Result->PBest = PBest;
   Ptr_PSO_Result->fPBest = fPBest;
+  Ptr_PSO_Result->fPBestHist = fPBestHist;
 	//Ptr_PSO_Result->updateRec = updateRec;
 }
 

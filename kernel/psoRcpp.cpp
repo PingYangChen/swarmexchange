@@ -24,7 +24,8 @@ List DiscreteDesignPSO(Rcpp::List ALG_INFO_LIST, Rcpp::List D_INFO_LIST, bool PA
                       Named("fGBest") = wrap(Result.fGBest),
                       Named("fGBestHist") = wrap(Result.fGBestHist),
                       Named("PBest") = wrap(Result.PBest),
-                      Named("fPBest") = wrap(Result.fPBest));//,
+                      Named("fPBest") = wrap(Result.fPBest),
+                      Named("fPBestHist") = wrap(Result.fPBestHist));//,
 											//Named("updateRec") = wrap(Result.updateRec));
 }
 

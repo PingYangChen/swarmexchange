@@ -33,17 +33,17 @@ void UPDATE_PSE(mat &DESIGN, double &DESIGN_VAL, const mat &GBest, const mat &PB
 		}
 	} else {
 		// mix w GB
-		MAT_TAR = GBest;	
+		MAT_TAR = GBest;
 	}
-	
+	//
 	MIX_COL_VAL = MIX_OPERATOR(0, MIX_COL, DESIGN, DESIGN_VAL, MAT_TAR, maximize, D_INFO, PSO_OPTS);
 	if (D_INFO.balance != 1) {
 		MIX_ROW_VAL = MIX_OPERATOR(1, MIX_ROW, DESIGN, DESIGN_VAL, MAT_TAR, maximize, D_INFO, PSO_OPTS);
 	} else {
 		MIX_ROW = DESIGN; MIX_ROW_VAL = DESIGN_VAL;
 	}
-	
-	arma::rowvec moveCandidate(2, fill::zeros); uword MOVE; 
+	//
+	arma::rowvec moveCandidate(2, fill::zeros); uword MOVE;
 	moveCandidate << MIX_COL_VAL << MIX_ROW_VAL << endr;
 	if (maximize == 0) moveCandidate.min(MOVE); else moveCandidate.max(MOVE);
 	switch (MOVE) {
