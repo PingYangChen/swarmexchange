@@ -13,7 +13,7 @@ arma::mat DESIGNCRITERION(double &DESIGN_VAL, const mat &DESIGN, const DESIGN_IN
 	double nModel_double = (double)D_INFO.nModel;
 	arma::mat EYE = arma::eye<arma::mat>(DESIGN.n_rows, DESIGN.n_rows);
 	arma::mat valMat(nModel, nModel, fill::zeros);
-	
+	bool IS_NONSINGULAR;
 	if (typeCrit == -1) typeCrit = D_INFO.typeCrit;
 	switch (typeCrit) {
 		case 0:
@@ -26,31 +26,27 @@ arma::mat DESIGNCRITERION(double &DESIGN_VAL, const mat &DESIGN, const DESIGN_IN
 			for (int j = 0; j < nModel; j++) {
 				arma::mat Xj = getModelMatrix(DESIGN, D_INFO.modelIndices.slice(j), D_INFO);
 				arma::mat XXj = Xj.t() * Xj;
-				if (arma::rcond(XXj) > 1e-18) {
-					arma::mat IminusHj(DESIGN.n_rows, DESIGN.n_rows, fill::zeros);
-					try
-    			{
-						IminusHj = EYE - (Xj * (XXj.i()) * Xj.t());
-					}
-					catch (std::exception& e)
-    			{
-    				break;
-    			}
-					for (int i = 0; i < nModel; i++) {
-						if (i != j) {
-							double pij; 
-							arma::imat modelDiff = getDiffIdx(pij, D_INFO.modelIndices.slice(i), D_INFO.modelIndices.slice(j));
-							arma::mat Xij = getModelMatrix(DESIGN, modelDiff, D_INFO);
-							arma::mat Mij = Xij.t() * IminusHj * Xij;
-							double detM = arma::det(Mij);
-							if (detM > 0) { 
-								valMat(i, j) = std::log(detM)/pij; 
-							} /*else {
-								valMat.zeros(); i += nModel; j += nModel;
-							} */
-						}  
-					}
-				} 
+				if (arma::rcond(XXj) < 1e-18) { break; }
+				arma::mat XXjInv(XXj.n_rows, XXj.n_rows, fill::zeros);
+				IS_NONSINGULAR = arma::inv(XXjInv, XXj);
+				if (!IS_NONSINGULAR) {
+  				break;
+				}
+  			arma::mat IminusHj = EYE - (Xj * XXjInv * Xj.t());
+				for (int i = 0; i < nModel; i++) {
+					if (i != j) {
+						double pij; 
+						arma::imat modelDiff = getDiffIdx(pij, D_INFO.modelIndices.slice(i), D_INFO.modelIndices.slice(j));
+						arma::mat Xij = getModelMatrix(DESIGN, modelDiff, D_INFO);
+						arma::mat Mij = Xij.t() * IminusHj * Xij;
+						double detM = arma::det(Mij);
+						if (detM > 0) { 
+							valMat(i, j) = std::log(detM)/pij; 
+						} /*else {
+							valMat.zeros(); i += nModel; j += nModel;
+						} */
+					}  
+				}
 			}
 			DESIGN_VAL = arma::accu(valMat)/(nModel_double*(nModel_double - 1.0));
 			break;
@@ -61,36 +57,28 @@ arma::mat DESIGNCRITERION(double &DESIGN_VAL, const mat &DESIGN, const DESIGN_IN
 			for (int i = 0; i < nModel; i++) {
 				arma::mat Xi = getModelMatrix(DESIGN, D_INFO.modelIndices.slice(i), D_INFO);
 				arma::mat XXi = Xi.t() * Xi;
-				if (arma::rcond(XXi) > 1e-18) {
-					arma::mat Hi(DESIGN.n_rows, DESIGN.n_rows, fill::zeros);
-					try
-    			{
-						Hi = Xi * (XXi.i()) * Xi.t();
+				if (arma::rcond(XXi) < 1e-18) { break; }
+				arma::mat XXiInv(XXi.n_rows, XXi.n_rows, fill::zeros);
+				IS_NONSINGULAR = arma::inv(XXiInv, XXi);
+				if (!IS_NONSINGULAR) {
+  				break;
+				}
+				arma::mat Hi = Xi * XXiInv * Xi.t();
+				for (int j = 0; j < i; j++) {
+					arma::mat Xj = getModelMatrix(DESIGN, D_INFO.modelIndices.slice(j), D_INFO);
+					arma::mat XXj = Xj.t() * Xj;
+					if (arma::rcond(XXj) < 1e-18) { break; }
+					arma::mat XXjInv(XXj.n_rows, XXj.n_rows, fill::zeros);
+					IS_NONSINGULAR = arma::inv(XXjInv, XXj);
+					if (!IS_NONSINGULAR) {
+	  				break;
 					}
-					catch (std::exception& e)
-    			{
-    				break;
-    			}
-					for (int j = 0; j < i; j++) {
-						arma::mat Xj = getModelMatrix(DESIGN, D_INFO.modelIndices.slice(j), D_INFO);
-						arma::mat XXj = Xj.t() * Xj;
-						if (arma::rcond(XXj) > 1e-18) {
-							arma::mat HiMinusHj(DESIGN.n_rows, DESIGN.n_rows, fill::zeros);
-							try
-		    			{
-								HiMinusHj = Hi - (Xj * (XXj.i()) * Xj.t());
-							}
-							catch (std::exception& e)
-		    			{
-		    				break;
-		    			}
-							arma::mat Dij = HiMinusHj * HiMinusHj;
-							double trD = arma::trace(Dij);
-							if (trD > 0) valMat(i,j) = trD/nRun_double;
-							valMat(j,i) = valMat(i,j);
-						}
-					}
-				} 
+					arma::mat HiMinusHj = Hi - (Xj * XXjInv * Xj.t());
+					arma::mat Dij = HiMinusHj * HiMinusHj;
+					double trD = arma::trace(Dij);
+					if (trD > 0) valMat(i,j) = trD/nRun_double;
+					valMat(j,i) = valMat(i,j);
+				}
 			}
 			DESIGN_VAL = arma::accu(valMat)/(nModel_double*(nModel_double - 1.0));
 			break;
@@ -100,29 +88,25 @@ arma::mat DESIGNCRITERION(double &DESIGN_VAL, const mat &DESIGN, const DESIGN_IN
 			for (int j = 0; j < nModel; j++) {
 				arma::mat Xj = getModelMatrix(DESIGN, D_INFO.modelIndices.slice(j), D_INFO);
 				arma::mat XXj = Xj.t() * Xj;
-				if (arma::rcond(XXj) > 1e-18) {
-					arma::mat IminusHj(DESIGN.n_rows, DESIGN.n_rows, fill::zeros);
-					try
-    			{
-						IminusHj = EYE - (Xj * (XXj.i()) * Xj.t());
+				if (arma::rcond(XXj) < 1e-18) { break; }
+				arma::mat XXjInv(XXj.n_rows, XXj.n_rows, fill::zeros);
+				IS_NONSINGULAR = arma::inv(XXjInv, XXj);
+				if (!IS_NONSINGULAR) {
+  				break;
+				}
+				arma::mat IminusHj = EYE - (Xj * XXjInv * Xj.t());
+				for (int i = 0; i < nModel; i++) {
+					if (i != j) {
+						double pij; 
+						arma::imat modelDiff = getDiffIdx(pij, D_INFO.modelIndices.slice(i), D_INFO.modelIndices.slice(j));
+						arma::mat Xij = getModelMatrix(DESIGN, modelDiff, D_INFO);
+						arma::mat Mij = Xij.t() * IminusHj * Xij;
+						double detM = arma::det(Mij);
+						if ((arma::rcond(Mij) > 1e-18) & (detM > 0)) valMat(i,j) = arma::trace(Mij.i())/pij;
 					}
-					catch (std::exception& e)
-    			{
-    				break;
-    			}
-					for (int i = 0; i < nModel; i++) {
-						if (i != j) {
-							double pij; 
-							arma::imat modelDiff = getDiffIdx(pij, D_INFO.modelIndices.slice(i), D_INFO.modelIndices.slice(j));
-							arma::mat Xij = getModelMatrix(DESIGN, modelDiff, D_INFO);
-							arma::mat Mij = Xij.t() * IminusHj * Xij;
-							double detM = arma::det(Mij);
-							if ((arma::rcond(Mij) > 1e-18) & (detM > 0)) valMat(i,j) = arma::trace(Mij.i())/pij;
-						}
-					}
-				} 
+				}
 			}
-			DESIGN_VAL = arma::accu(valMat)/(nModel_double*(nModel_double - 1.0));
+			DESIGN_VAL = (-1.0)*arma::accu(valMat)/(nModel_double*(nModel_double - 1.0));
 			break;
 		}
 		case 4:
@@ -130,27 +114,23 @@ arma::mat DESIGNCRITERION(double &DESIGN_VAL, const mat &DESIGN, const DESIGN_IN
 			for (int j = 0; j < nModel; j ++) {
 				arma::mat Xj = getModelMatrix(DESIGN, D_INFO.modelIndices.slice(j), D_INFO);
 				arma::mat XXj = Xj.t() * Xj;
-				if (arma::rcond(XXj) > 1e-18) {
-					arma::mat IminusHj(DESIGN.n_rows, DESIGN.n_rows, fill::zeros);
-					try
-    			{
-						IminusHj = EYE - (Xj * (XXj.i()) * Xj.t());
+				if (arma::rcond(XXj) < 1e-18) { break; }
+				arma::mat XXjInv(XXj.n_rows, XXj.n_rows, fill::zeros);
+				IS_NONSINGULAR = arma::inv(XXjInv, XXj);
+				if (!IS_NONSINGULAR) {
+  				break;
+				}
+				arma::mat IminusHj = EYE - (Xj * XXjInv * Xj.t());
+				for (int i = 0; i < nModel; i ++) {
+					if (i != j) {
+						double pij; 
+						arma::imat modelDiff = getDiffIdx(pij, D_INFO.modelIndices.slice(i), D_INFO.modelIndices.slice(j));
+						arma::mat Xij = getModelMatrix(DESIGN, modelDiff, D_INFO);
+						arma::mat Mij = Xij.t() * IminusHj * Xij;
+						double trM = arma::trace(Mij);
+						if (trM > 0) valMat(i,j) = trM/pij;
 					}
-					catch (std::exception& e)
-    			{
-    				break;
-    			}
-					for (int i = 0; i < nModel; i ++) {
-						if (i != j) {
-							double pij; 
-							arma::imat modelDiff = getDiffIdx(pij, D_INFO.modelIndices.slice(i), D_INFO.modelIndices.slice(j));
-							arma::mat Xij = getModelMatrix(DESIGN, modelDiff, D_INFO);
-							arma::mat Mij = Xij.t() * IminusHj * Xij;
-							double trM = arma::trace(Mij);
-							if (trM > 0) valMat(i,j) = trM/pij;
-						}
-					}
-				} 
+				}
 			}
 			DESIGN_VAL = arma::accu(valMat)/(nModel_double*(nModel_double - 1.0));
 			break;

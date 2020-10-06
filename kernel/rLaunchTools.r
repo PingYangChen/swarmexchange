@@ -55,10 +55,10 @@ rGetDesignInfo <- function(typeCrit = 1, n = 12, m = 4,
 
 rGetAlgInfo <- function(nSwarm = 8, maxIter = 50, PSO_UPDATE = 0, maximize = 1, tol = 0,
 												MIX_C = 1, MIX_R = 1, JFO_RV = 1.0, JFO_R0 = 0.9, JFO_R1 = 0.3,
-												JFO_RHO = 0.5) {
+												JFO_RHO = 0.5, HYBRIDEXALG = 0) {
 	list(nSwarm = nSwarm, maxIter = maxIter, PSO_UPDATE = PSO_UPDATE, maximize = maximize, tol = tol,
 			 MIX_C = MIX_C, MIX_R = MIX_R, JFO_RV = JFO_RV, JFO_R0 = JFO_R0, JFO_R1 = JFO_R1,
-			 JFO_RHO = JFO_RHO)
+			 JFO_RHO = JFO_RHO, HYBRIDEXALG = HYBRIDEXALG)
 }
 
 rGetCoorExInfo <- function(maxIter = 50, nTry = 1, maximize = 1, tol = 0) {

@@ -28,6 +28,7 @@ typedef struct {
 	// MIX Operator
 	int MIX_C;
 	int MIX_R;
+	int HYBRIDEXALG;
 	// Random Mixing Parameters
 	double JFO_R0;
 	double JFO_R1;
@@ -189,6 +190,7 @@ void getAlgStruct(Ptr_PSO_OPTIONS Ptr_PSO_OPT, const Rcpp::List &ALG_INFO_LIST)
 	// MIX Operator
 	Ptr_PSO_OPT->MIX_C = as<int>(ALG_INFO_LIST["MIX_C"]);
 	Ptr_PSO_OPT->MIX_R = as<int>(ALG_INFO_LIST["MIX_R"]);
+	Ptr_PSO_OPT->HYBRIDEXALG = as<int>(ALG_INFO_LIST["HYBRIDEXALG"]);
 	// Random Mixing Parameters
 	Ptr_PSO_OPT->JFO_RV = as<double>(ALG_INFO_LIST["JFO_RV"]);
 	Ptr_PSO_OPT->JFO_R0 = as<double>(ALG_INFO_LIST["JFO_R0"]);
