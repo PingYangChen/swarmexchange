@@ -18,7 +18,7 @@ source(file.path(kernelPath, "rLaunchTools.r"))
 
 ### Balanced Design ###
 # The example runs for the balanced design of n = 12, m = 4 for MEPI space with g = 1.
-designInfo <- rGetDesignInfo(typeCrit = 1, n = 20, m = 7, 
+designInfo <- rGetDesignInfo(typeCrit = 1, n = 20, m = 5, 
                              mSpName = "MEPI", g = 2,
                              balance = 1)
 
@@ -28,7 +28,7 @@ algInfo <- rGetAlgInfo(nSwarm = 32, maxIter = 100, PSO_UPDATE = 0,
                        HYBRIDEXALG = 1)
 # Run SIDD algorithm
 res <- rDiscreteDesignPSO(algInfo, designInfo, if_parallel = TRUE, 
-                          seed = 1, verbose = TRUE)
+                          seed = NULL, verbose = TRUE)
 names(res)
 
 res$RES$fGBest

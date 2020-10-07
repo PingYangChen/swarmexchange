@@ -35,8 +35,6 @@ void PSO_MAIN(Ptr_PSO_Result Ptr_PSO_Result, const PSO_OPTIONS &PSO_OPTS, const 
 		}
 	}
 	*/
-	psoUpdateDynPara(PSO_OPTS, -1, PSO_DYN);
-	
   int iSwarm, t; // SET PARTICLE COUNTER AND ITERATION COUNTER
   // --- Initialization of function evaluation
 	#pragma omp parallel private(iSwarm) 
@@ -57,7 +55,9 @@ void PSO_MAIN(Ptr_PSO_Result Ptr_PSO_Result, const PSO_OPTIONS &PSO_OPTS, const 
 	GBest = PBest.rows(GBestIdx*nRun, (GBestIdx + 1)*nRun - 1);	
 	fGBestHist(0) = fGBest;
   fPBestHist.col(0) = fPBest;
-	
+  // Initialize PSO DYNAMIC PARAMETERS
+  psoUpdateDynPara(fGBest, fPBest, fGBestHist, PSO_OPTS, -1, PSO_DYN);
+
 	if (VERBOSE) Rprintf("DONE \n"); 
 	
   ////// PSO LOOP
@@ -96,11 +96,11 @@ void PSO_MAIN(Ptr_PSO_Result Ptr_PSO_Result, const PSO_OPTIONS &PSO_OPTS, const 
         GBest = PBest.rows(GBestIdx*nRun, (GBestIdx + 1)*nRun - 1);	
       }
     }
-		// UPDATE PSO DYNAMIC PARAMETERS
-    psoUpdateDynPara(PSO_OPTS, t, PSO_DYN);
     // RECORDING THE CURRENT GLOBAL BEST VALUE
     fGBestHist(t+1) = fGBest; 
     fPBestHist.col(t+1) = fPBest;
+    // UPDATE PSO DYNAMIC PARAMETERS
+    psoUpdateDynPara(fGBest, fPBest, fGBestHist, PSO_OPTS, t, PSO_DYN);    
 		//if ((t*2 >= maxIter) && (tol > 0)) {
 		if (tol > 0) {	
       //if (std::abs(fGBest - fGBestHist(t)) < tol) t = maxIter;
@@ -115,5 +115,6 @@ void PSO_MAIN(Ptr_PSO_Result Ptr_PSO_Result, const PSO_OPTIONS &PSO_OPTS, const 
   Ptr_PSO_Result->fPBest = fPBest;
   Ptr_PSO_Result->fPBestHist = fPBestHist;
 	//Ptr_PSO_Result->updateRec = updateRec;
+  Ptr_PSO_Result->exAlgTrig = PSO_DYN.EXALG_TRIGGER;
 }
 

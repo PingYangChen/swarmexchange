@@ -3,6 +3,7 @@
 #include <math.h>
 #include <RcppArmadillo.h>
 #include <Rcpp.h>
+#include <time.h> 
 #include <omp.h>
 
 using namespace Rcpp;
@@ -29,6 +30,8 @@ typedef struct {
 	int MIX_C;
 	int MIX_R;
 	int HYBRIDEXALG;
+	double HYBRIDEXALG_A;
+	double HYBRIDEXALG_B;
 	// Random Mixing Parameters
 	double JFO_R0;
 	double JFO_R1;
@@ -45,6 +48,9 @@ typedef struct {
   int JFO_R_DUR; // (int)(w_var*maxIter);
   double JFO_R_CUR; // w0;
   double JFO_R_DEC; // (w0 - w1)/w_varyfor;
+  // Temperature of Applying Exchange Algorithm in MIX Operator
+  double EXALG_PROB;
+  arma::mat EXALG_TRIGGER;
 } PSO_DYN, *Ptr_PSO_DYN;
 
 typedef struct {
@@ -73,6 +79,7 @@ typedef struct {
   arma::mat fPBestHist;	
 	arma::imat updateRec;
 	//arma::mat JumpProb;
+	arma::mat exAlgTrig;
 } PSO_Result, *Ptr_PSO_Result;
 
 typedef struct {
@@ -100,7 +107,8 @@ void PSO_MAIN(Ptr_PSO_Result Ptr_PSO_Result, const PSO_OPTIONS &PSO_OPTS, const 
 void psoUpdateParticle(const DESIGN_INFO &D_INFO, const PSO_OPTIONS &PSO_OPTS, const PSO_DYN &PSO_DYN, 
 											 const arma::mat &PBest, const arma::rowvec &GBest, 
 											 const arma::vec &fPBest, const double &fGBest, arma::mat &swarm, arma::vec &fSwarm);
-void psoUpdateDynPara(const PSO_OPTIONS &PSO_OPTS, const int iter, PSO_DYN &PSO_DYN);
+void psoUpdateDynPara(const double &fGBest, const arma::vec &fPBest, const arma::rowvec &fGBestHist, 
+											const PSO_OPTIONS &PSO_OPTS, const int iter, PSO_DYN &PSO_DYN);
 void initDesigns(arma::mat &DESIGN_POOL, const DESIGN_INFO &D_INFO);
 
 arma::mat CoorExchange_CORE(arma::mat DESIGN, double DESIGN_VAL, const DESIGN_INFO &D_INFO);
@@ -192,6 +200,8 @@ void getAlgStruct(Ptr_PSO_OPTIONS Ptr_PSO_OPT, const Rcpp::List &ALG_INFO_LIST)
 	Ptr_PSO_OPT->MIX_C = as<int>(ALG_INFO_LIST["MIX_C"]);
 	Ptr_PSO_OPT->MIX_R = as<int>(ALG_INFO_LIST["MIX_R"]);
 	Ptr_PSO_OPT->HYBRIDEXALG = as<int>(ALG_INFO_LIST["HYBRIDEXALG"]);
+	Ptr_PSO_OPT->HYBRIDEXALG_A = as<double>(ALG_INFO_LIST["HYBRIDEXALG_A"]);
+	Ptr_PSO_OPT->HYBRIDEXALG_B = as<double>(ALG_INFO_LIST["HYBRIDEXALG_B"]);
 	// Random Mixing Parameters
 	Ptr_PSO_OPT->JFO_RV = as<double>(ALG_INFO_LIST["JFO_RV"]);
 	Ptr_PSO_OPT->JFO_R0 = as<double>(ALG_INFO_LIST["JFO_R0"]);

@@ -36,7 +36,7 @@ arma::mat DESIGNCRITERION(double &DESIGN_VAL, const mat &DESIGN, const DESIGN_IN
 						double pij; 
 						arma::imat modelDiff = getDiffIdx(pij, D_INFO.modelIndices.slice(i), D_INFO.modelIndices.slice(j));
 						arma::mat Xij = getModelMatrix(DESIGN, modelDiff, D_INFO);
-						arma::mat Mij = Xij.t() * IminusHj * Xij;
+						arma::mat Mij = Xij.t() * IminusHj * Xij;					
 						double detM = arma::det(Mij);
 						if (detM > 0) { 
 							valMat(i, j) = std::log(detM)/pij; 

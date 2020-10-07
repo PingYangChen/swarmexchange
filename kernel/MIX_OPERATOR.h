@@ -1,18 +1,19 @@
 
 // DECLARE FUNCTIONS
 double MIX_OPERATOR(const int &MIX_PROC, arma::mat &MIX, const arma::mat &DESIGN_A, const double &VAL_A, const arma::mat &DESIGN_B, 
-										const int &maximize, const DESIGN_INFO &D_INFO, const PSO_OPTIONS &PSO_OPTS);
+										const int &maximize, const DESIGN_INFO &D_INFO, const PSO_OPTIONS &PSO_OPTS, const PSO_DYN &PSO_DYN);
 //double HAMMING_TWOLEVEL(arma::mat &DESIGN);
 
 // BODY
 double MIX_OPERATOR(const int &MIX_PROC, arma::mat &MIX, const arma::mat &DESIGN_A, const double &VAL_A, const arma::mat &DESIGN_B, 
-										const int &maximize, const DESIGN_INFO &D_INFO, const PSO_OPTIONS &PSO_OPTS)
+										const int &maximize, const DESIGN_INFO &D_INFO, const PSO_OPTIONS &PSO_OPTS, const PSO_DYN &PSO_DYN)
 {
 	double MIX_VAL = VAL_A; double DESIGN_VAL;
 	MIX = DESIGN_A;
 	uword DELETE_WHO = 0; uword ADD_WHO = 0; arma::mat ADD_ONE_BACK = MIX;
 	double DUP_VAL;
 	if (maximize == 0) DUP_VAL = 1e20; else DUP_VAL = -1e20;
+	double EXALG_PROB = PSO_DYN.EXALG_PROB; double DICE;
 
 	switch (MIX_PROC) {
 		case 0: 
@@ -58,14 +59,18 @@ double MIX_OPERATOR(const int &MIX_PROC, arma::mat &MIX, const arma::mat &DESIGN
 				uword ADD_WHO;
 				if (maximize == 0) MIX_VAL = valVec.min(ADD_WHO); else MIX_VAL = valVec.max(ADD_WHO);
 				MIX.col(DELETE_WHO) = DESIGN_B.col(ADD_WHO);
-				if (PSO_OPTS.HYBRIDEXALG == 1) {
-					if (D_INFO.balance == 1) {
-						// Use CP-algorithm
-						MIX = ColumnPair_CORE(MIX, MIX_VAL, D_INFO, DELETE_WHO, maximize);
-					} else {
-						// Use Coordinate Exchange
-						for (int row_i = 0; row_i < (int)MIX.n_rows; row_i++) {
-							MIX = CoorExchange_CORE(MIX, MIX_VAL, D_INFO, row_i, DELETE_WHO, maximize);
+				// Decide to use exchange algorithms
+				DICE = arma::as_scalar(randu(1, 1));
+				if (DICE < EXALG_PROB) {
+					if (PSO_OPTS.HYBRIDEXALG == 1) {
+						if (D_INFO.balance == 1) {
+							// Use CP-algorithm
+							MIX = ColumnPair_CORE(MIX, MIX_VAL, D_INFO, DELETE_WHO, maximize);
+						} else {
+							// Use Coordinate Exchange
+							for (int row_i = 0; row_i < (int)MIX.n_rows; row_i++) {
+								MIX = CoorExchange_CORE(MIX, MIX_VAL, D_INFO, row_i, DELETE_WHO, maximize);
+							}
 						}
 					}
 				}
@@ -101,12 +106,16 @@ double MIX_OPERATOR(const int &MIX_PROC, arma::mat &MIX, const arma::mat &DESIGN
 				}
 				if (maximize == 0) MIX_VAL = valVec.min(ADD_WHO); else MIX_VAL = valVec.max(ADD_WHO);
 				MIX.row(DELETE_WHO) = DESIGN_B.row(ADD_WHO);
-			}
-			if (PSO_OPTS.HYBRIDEXALG == 1) {
-				// Use Coordinate Exchange
-				for (int col_j = 0; col_j < (int)MIX.n_cols; col_j++) {
-					MIX = CoorExchange_CORE(MIX, MIX_VAL, D_INFO, DELETE_WHO, col_j, maximize);
-				}
+				// Decide to use exchange algorithms
+				DICE = arma::as_scalar(randu(1, 1));
+				if (DICE < EXALG_PROB) {			
+					if (PSO_OPTS.HYBRIDEXALG == 1) {
+						// Use Coordinate Exchange
+						for (int col_j = 0; col_j < (int)MIX.n_cols; col_j++) {
+							MIX = CoorExchange_CORE(MIX, MIX_VAL, D_INFO, DELETE_WHO, col_j, maximize);
+						}
+					}
+				}				
 			}
 			break;
 		}

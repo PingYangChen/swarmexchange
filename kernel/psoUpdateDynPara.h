@@ -1,4 +1,5 @@
-void psoUpdateDynPara(const PSO_OPTIONS &PSO_OPTS, const int iter, PSO_DYN &PSO_DYN)
+void psoUpdateDynPara(const double &fGBest, const arma::vec &fPBest, const arma::rowvec &fGBestHist, 
+											const PSO_OPTIONS &PSO_OPTS, const int iter, PSO_DYN &PSO_DYN)
 {
   if (iter < 0) { // INITIALIZE
 	
@@ -6,10 +7,28 @@ void psoUpdateDynPara(const PSO_OPTIONS &PSO_OPTS, const int iter, PSO_DYN &PSO_
   	PSO_DYN.JFO_R_DUR	= JFO_R_DUR;
 	  PSO_DYN.JFO_R_CUR	= PSO_OPTS.JFO_R0;
 	  PSO_DYN.JFO_R_DEC	= (PSO_OPTS.JFO_R0 - PSO_OPTS.JFO_R1)/JFO_R_DUR;      // Inertia weight change per iteration step
-	  
+	  // TEMP_MAX = 1000.0
+	  PSO_DYN.EXALG_PROB = 0.0;
+	  arma::mat EXALG_TRIGGER(PSO_OPTS.maxIter + 1, 4, fill::zeros);
+	  arma::rowvec extg_tmp(4, fill::zeros);
+	  extg_tmp << 0.0 << 0.0 << 0.0 << arma::stddev(fGBest - fPBest) << endr; // prob, temp, tv, sv
+	  EXALG_TRIGGER.row(0) = extg_tmp;
+	  PSO_DYN.EXALG_TRIGGER = EXALG_TRIGGER;
+
   } else { // UPDATE
     
-		if (iter <= PSO_DYN.JFO_R_DUR) PSO_DYN.JFO_R_CUR = PSO_DYN.JFO_R_CUR - PSO_DYN.JFO_R_DEC; 
+		if (iter <= PSO_DYN.JFO_R_DUR) {
+			PSO_DYN.JFO_R_CUR = PSO_DYN.JFO_R_CUR - PSO_DYN.JFO_R_DEC; 
+		}
+		double EXALG_TEMP = PSO_OPTS.HYBRIDEXALG_A*(1.0 - std::exp(-(double)(iter + 1)/PSO_OPTS.HYBRIDEXALG_B));
+		double fGB_timeVar = std::abs(fGBest - fGBestHist(iter)); // tv^p_
+		double fGB_spaceVar = arma::stddev(fGBest - fPBest); // sv^p_
 		
+		PSO_DYN.EXALG_PROB = std::exp(-(fGB_spaceVar + fGB_timeVar)/EXALG_TEMP);
+		//Rprintf("EXALG_PROB = %2.1f%% at ITERATION %d (tv = %2.2f, sv = %2.2f)\n", PSO_DYN.EXALG_PROB*100.0, iter, fGB_timeVar, fGB_spaceVar); 
+		arma::rowvec extg_tmp(4, fill::zeros);
+		extg_tmp << PSO_DYN.EXALG_PROB << EXALG_TEMP << fGB_timeVar << fGB_spaceVar << endr; // prob, temp, tv, sv
+		PSO_DYN.EXALG_TRIGGER.row(iter+1) = extg_tmp;
+
   }
 }
