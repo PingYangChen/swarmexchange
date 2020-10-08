@@ -58,15 +58,16 @@ rGetAlgInfo <- function(nSwarm = 8, maxIter = 50, PSO_UPDATE = 0, maximize = 1, 
 												JFO_RHO = 0.5, HYBRIDEXALG = 0) {
 	list(nSwarm = nSwarm, maxIter = maxIter, PSO_UPDATE = PSO_UPDATE, maximize = maximize, tol = tol,
 			 MIX_C = MIX_C, MIX_R = MIX_R, JFO_RV = JFO_RV, JFO_R0 = JFO_R0, JFO_R1 = JFO_R1,
-			 JFO_RHO = JFO_RHO, HYBRIDEXALG = HYBRIDEXALG)
+			 JFO_RHO = JFO_RHO, HYBRIDEXALG = HYBRIDEXALG, 
+			 version = '20201007')
 }
 
 rGetCoorExInfo <- function(maxIter = 50, nTry = 1, maximize = 1, tol = 0) {
-	list(maxIter = maxIter, nTry = nTry, maximize = maximize, tol = tol)
+	list(maxIter = maxIter, nTry = nTry, maximize = maximize, tol = tol, version = '20201007')
 }
 
 rGetColPairInfo <- function(maxIter = 50, nTry = 1, maximize = 1, CPk = 1, tol = 0) {
-	list(maxIter = maxIter, nTry = nTry, maximize = maximize, CPk = CPk, tol = tol)
+	list(maxIter = maxIter, nTry = nTry, maximize = maximize, CPk = CPk, tol = tol, version = '20201007')
 }
 
 rDiscreteDesignPSO <- function(algInfo, designInfo, if_parallel = TRUE, seed = NULL, verbose = TRUE) {
@@ -74,7 +75,7 @@ rDiscreteDesignPSO <- function(algInfo, designInfo, if_parallel = TRUE, seed = N
 	cputime <- system.time(
 		out <- DiscreteDesignPSO(algInfo, designInfo, if_parallel, verbose)  
 	)[3]
-	list(RES = out, CPUTIME = cputime, VER = '20201007')
+	list(RES = out, CPUTIME = cputime)
 }
 
 rDiscreteDesignCoorEx <- function(algInfo, designInfo, if_parallel = TRUE, seed = NULL, verbose = TRUE) {
@@ -82,7 +83,7 @@ rDiscreteDesignCoorEx <- function(algInfo, designInfo, if_parallel = TRUE, seed 
 	cputime <- system.time(
 		out <- DiscreteDesignCoorEx(algInfo, designInfo, if_parallel, verbose)  
 	)[3]
-	list(RES = out, CPUTIME = cputime, VER = '20201007')
+	list(RES = out, CPUTIME = cputime)
 }
 
 rDiscreteDesignColPair <- function(algInfo, designInfo, if_parallel = TRUE, seed = NULL, verbose = TRUE) {
@@ -92,5 +93,5 @@ rDiscreteDesignColPair <- function(algInfo, designInfo, if_parallel = TRUE, seed
 	cputime <- system.time(
 		out <- DiscreteDesignColPair(algInfo, designInfo, if_parallel, verbose)  
 	)[3]
-	list(RES = out, CPUTIME = cputime, VER = '20201007')
+	list(RES = out, CPUTIME = cputime)
 }

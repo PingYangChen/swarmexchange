@@ -153,6 +153,8 @@ void ColumnPair_MAIN(Ptr_CP_Result Ptr_CP_Result, const CP_OPTIONS &CP_OPTS, con
   Ptr_CP_Result->DESIGN = BestD;
   Ptr_CP_Result->DESIGN_VAL = BestVal;
   Ptr_CP_Result->fvalHist = BestPath;
-
+  Ptr_CP_Result->DESIGN_POOL = DESIGN_POOL;
+  Ptr_CP_Result->DESIGN_VAL_POOL = DESIGN_VAL_POOL;
+  Ptr_CP_Result->fvalHist_POOL = fvalHist_POOL;
 }
 

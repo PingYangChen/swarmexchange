@@ -45,7 +45,11 @@ List DiscreteDesignCoorEx(Rcpp::List CE_INFO_LIST, Rcpp::List D_INFO_LIST, bool 
   
   return List::create(Named("DESIGN") = wrap(Result.DESIGN),
                       Named("DESIGN_VAL") = wrap(Result.DESIGN_VAL),
-                      Named("fvalHist") = wrap(Result.fvalHist));
+                      Named("fvalHist") = wrap(Result.fvalHist),
+                      Named("DESIGN_POOL") = wrap(Result.DESIGN_POOL),
+                      Named("DESIGN_VAL_POOL") = wrap(Result.DESIGN_VAL_POOL),
+                      Named("fvalHist_POOL") = wrap(Result.fvalHist_POOL)
+                      );
 }
 
 //[[Rcpp::export]]
@@ -63,7 +67,11 @@ List DiscreteDesignColPair(Rcpp::List CP_INFO_LIST, Rcpp::List D_INFO_LIST, bool
   
   return List::create(Named("DESIGN") = wrap(Result.DESIGN),
                       Named("DESIGN_VAL") = wrap(Result.DESIGN_VAL),
-                      Named("fvalHist") = wrap(Result.fvalHist));
+                      Named("fvalHist") = wrap(Result.fvalHist),
+                      Named("DESIGN_POOL") = wrap(Result.DESIGN_POOL),
+                      Named("DESIGN_VAL_POOL") = wrap(Result.DESIGN_VAL_POOL),
+                      Named("fvalHist_POOL") = wrap(Result.fvalHist_POOL)
+                      );
 }
 
 

@@ -84,12 +84,18 @@ typedef struct {
   arma::mat DESIGN;
   double DESIGN_VAL;
   arma::vec fvalHist;
+	arma::mat DESIGN_POOL;
+  arma::vec DESIGN_VAL_POOL;
+  arma::mat fvalHist_POOL;  
 } CE_Result, *Ptr_CE_Result;
 
 typedef struct {
   arma::mat DESIGN;
   double DESIGN_VAL;
   arma::vec fvalHist;
+	arma::mat DESIGN_POOL;
+  arma::vec DESIGN_VAL_POOL;
+  arma::mat fvalHist_POOL;   
 } CP_Result, *Ptr_CP_Result;
 
 
