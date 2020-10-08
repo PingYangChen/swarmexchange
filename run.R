@@ -18,7 +18,7 @@ source(file.path(kernelPath, "rLaunchTools.r"))
 
 ### Balanced Design ###
 # The example runs for the balanced design of n = 12, m = 4 for MEPI space with g = 1.
-designInfo <- rGetDesignInfo(typeCrit = 1, n = 20, m = 5, 
+designInfo <- rGetDesignInfo(typeCrit = 1, n = 20, m = 7, 
                              mSpName = "MEPI", g = 2,
                              balance = 1)
 

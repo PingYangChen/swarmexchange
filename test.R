@@ -15,17 +15,23 @@ sourceCpp(file.path(kernelPath,"psoRcpp.cpp"), verbose = FALSE)
 source(file.path(kernelPath, "rLaunchTools.r"))
 
 # Begin Instruction
+N_REP <- 30
 HYBRIDEXALG_SET <- c(0, 1)
-N_SET <- c(12, 16, 20)
-M_SET <- c(4, 5, 6)
+N_SET <- c(12, 16, 20, 24)
+M_SET <- c(4, 5, 6, 7)
 G_SET <- c(1, 2)
+
+set.seed(1007)
+SEED_SET <- sample(1:1000, N_REP)
 
 CONFIG_MESH <- c()
 for (k1 in 1:length(HYBRIDEXALG_SET)) {
   for (k2 in 1:length(N_SET)) {
     for (k3 in 1:length(M_SET)) {
       for (k4 in 1:length(G_SET)) {
-        CONFIG_MESH <- rbind(CONFIG_MESH, c(HYBRIDEXALG_SET[k1], N_SET[k2], M_SET[k3], G_SET[k4]))
+        for (k5 in 1:length(SEED_SET)) {
+          CONFIG_MESH <- rbind(CONFIG_MESH, c(HYBRIDEXALG_SET[k1], N_SET[k2], M_SET[k3], G_SET[k4], SEED_SET[k5]))
+        }
       }
     }
   }
@@ -35,7 +41,6 @@ colnames(CONFIG_MESH) <- c("HYBRIDEXALG", "N", "M", "G")
 RESULT_MAT <- matrix(0, nrow(CONFIG_MESH), 4)
 colnames(RESULT_MAT) <- c("fGBEST", "ITER_REACH_MAX", "N_PBEST_SPOT_GBEST", "CPU_TIME")
 for (i in 1:nrow(CONFIG_MESH)) {
-  i=28
   hybridexalg <- CONFIG_MESH[i,1]
   n <- CONFIG_MESH[i,2]
   m <- CONFIG_MESH[i,3]
@@ -45,7 +50,7 @@ for (i in 1:nrow(CONFIG_MESH)) {
   # Set SIDD algorithm
   algInfo <- rGetAlgInfo(nSwarm = 32, maxIter = 100, PSO_UPDATE = 0,  
                          JFO_R0 = 0.9, JFO_R1 = 0.3, MIX_C = 1, MIX_R = 0,
-                         HYBRIDEXALG = hybridexalg, HYBRIDEXALG_A = 0.5, HYBRIDEXALG_B = 25.0)
+                         HYBRIDEXALG = hybridexalg)
   # Run SIDD algorithm
   res <- rDiscreteDesignPSO(algInfo, designInfo, if_parallel = TRUE, 
                             seed = 1, verbose = TRUE)  
