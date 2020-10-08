@@ -74,7 +74,7 @@ rDiscreteDesignPSO <- function(algInfo, designInfo, if_parallel = TRUE, seed = N
 	cputime <- system.time(
 		out <- DiscreteDesignPSO(algInfo, designInfo, if_parallel, verbose)  
 	)[3]
-	list(RES = out, CPUTIME = cputime)
+	list(RES = out, CPUTIME = cputime, VER = '20201007')
 }
 
 rDiscreteDesignCoorEx <- function(algInfo, designInfo, if_parallel = TRUE, seed = NULL, verbose = TRUE) {
@@ -82,7 +82,7 @@ rDiscreteDesignCoorEx <- function(algInfo, designInfo, if_parallel = TRUE, seed 
 	cputime <- system.time(
 		out <- DiscreteDesignCoorEx(algInfo, designInfo, if_parallel, verbose)  
 	)[3]
-	list(RES = out, CPUTIME = cputime)
+	list(RES = out, CPUTIME = cputime, VER = '20201007')
 }
 
 rDiscreteDesignColPair <- function(algInfo, designInfo, if_parallel = TRUE, seed = NULL, verbose = TRUE) {
@@ -92,5 +92,5 @@ rDiscreteDesignColPair <- function(algInfo, designInfo, if_parallel = TRUE, seed
 	cputime <- system.time(
 		out <- DiscreteDesignColPair(algInfo, designInfo, if_parallel, verbose)  
 	)[3]
-	list(RES = out, CPUTIME = cputime)
+	list(RES = out, CPUTIME = cputime, VER = '20201007')
 }
