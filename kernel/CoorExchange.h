@@ -112,6 +112,8 @@ void CoorExchange_MAIN(Ptr_CE_Result Ptr_CE_Result, const CE_OPTIONS &CE_OPTS, c
   Ptr_CE_Result->DESIGN = BestD;
   Ptr_CE_Result->DESIGN_VAL = BestVal;
   Ptr_CE_Result->fvalHist = BestPath;
-
+  Ptr_CE_Result->DESIGN_POOL = DESIGN_POOL;
+  Ptr_CE_Result->DESIGN_VAL_POOL = DESIGN_VAL_POOL;
+  Ptr_CE_Result->fvalHist_POOL = fvalHist_POOL;
 }
 
