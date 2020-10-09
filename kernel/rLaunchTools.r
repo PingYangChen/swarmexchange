@@ -59,7 +59,7 @@ rGetAlgInfo <- function(nSwarm = 8, maxIter = 50, PSO_UPDATE = 0, maximize = 1, 
 	list(nSwarm = nSwarm, maxIter = maxIter, PSO_UPDATE = PSO_UPDATE, maximize = maximize, tol = tol,
 			 MIX_C = MIX_C, MIX_R = MIX_R, JFO_RV = JFO_RV, JFO_R0 = JFO_R0, JFO_R1 = JFO_R1,
 			 JFO_RHO = JFO_RHO, HYBRIDEXALG = HYBRIDEXALG, 
-			 version = '20201007')
+			 version = '20201009')
 }
 
 rGetCoorExInfo <- function(maxIter = 50, nTry = 1, maximize = 1, tol = 0) {

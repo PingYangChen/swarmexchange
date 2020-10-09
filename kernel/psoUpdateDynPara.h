@@ -20,10 +20,13 @@ void psoUpdateDynPara(const double &fGBest, const arma::vec &fPBest, const arma:
 		if (iter <= PSO_DYN.JFO_R_DUR) {
 			PSO_DYN.JFO_R_CUR = PSO_DYN.JFO_R_CUR - PSO_DYN.JFO_R_DEC; 
 		}
-		double fGB_timeVar = std::abs(fGBest - fGBestHist(iter)); // tv^p_
-		double fGB_spaceVar = arma::stddev(fGBest - fPBest); // sv^p_
-		
-		PSO_DYN.EXALG_PROB = std::exp(-(fGB_spaceVar + fGB_timeVar));
+		double fGB_timeVar = std::abs(fGBest - fGBestHist(iter))/std::abs(fGBestHist(iter)); // tv^p_
+		double fGB_spaceVar = arma::stddev(fPBest)/std::abs(arma::mean(fPBest)); // sv^p_
+		if ((fGB_timeVar + fGB_spaceVar) >= 2.) {
+			PSO_DYN.EXALG_PROB = 0.;
+		} else {
+			PSO_DYN.EXALG_PROB = 1. - .5*(fGB_timeVar + fGB_spaceVar);//std::exp(-(fGB_spaceVar + fGB_timeVar));
+		}
 		//Rprintf("EXALG_PROB = %2.1f%% at ITERATION %d (tv = %2.2f, sv = %2.2f)\n", PSO_DYN.EXALG_PROB*100.0, iter, fGB_timeVar, fGB_spaceVar); 
 		arma::rowvec extg_tmp(3, fill::zeros);
 		extg_tmp << PSO_DYN.EXALG_PROB << fGB_timeVar << fGB_spaceVar << endr; // prob, temp, tv, sv
