@@ -8,8 +8,13 @@ rGetDesignInfo <- function(typeCrit = 1, n = 12, m = 4,
 		nMainEff <- m; nTwofi <- g
 	} else if (mSpName == "PMS") {
 		mainEffSet <- combn(m, q)
-		modelSp <- t(sapply(1:ncol(mainEffSet), function(i) c(mainEffSet[,i], as.vector(combn(mainEffSet[,i], 2))) ))
-		nMainEff <- q; nTwofi <- choose(q, 2)
+		if (q == 1) {
+			modelSp <- t(mainEffSet)
+			nMainEff <- q; nTwofi <- 0
+		} else {
+			modelSp <- t(sapply(1:ncol(mainEffSet), function(i) c(mainEffSet[,i], as.vector(combn(mainEffSet[,i], 2))) ))
+			nMainEff <- q; nTwofi <- choose(q, 2)
+		}
 	} else { stop("Model space should be one of 'MEPI' and 'PMS'.") }
 
 	modelSp <- modelSp - 1 # for Cpp indexing
