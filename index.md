@@ -1,10 +1,10 @@
-## Welcome to GitHub Pages
+## Model-Discrimination Designs
 
-You can use the [editor on GitHub](https://github.com/PingYangChen/swarmexchange/edit/gh-pages/index.md) to maintain and preview the content for your website in Markdown files.
+This webpage collects the balanced and unbalanced optimal model-discrimination designs generated
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+### Model Space
 
-### Markdown
+$PMS_1$
 
 Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
 
