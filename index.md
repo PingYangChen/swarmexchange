@@ -16,11 +16,9 @@ This webpage collects the balanced and unbalanced optimal model-discrimination d
 
 ### Model Space
 
-$$PMS_1$$
+### Design Criteria
 
-$$\lambda$$
-
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
+$$\overline{AF} = \frac{1}{|\mathcal{F}|\left(|\mathcal{F}| - 1\right)}\sum_{i=1}^{|\mathcal{F}|}\sum_{j \neq i}AF_{ij}$$
 
 ### Algorithm
 
