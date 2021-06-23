@@ -4,7 +4,7 @@ This webpage collects the balanced and unbalanced optimal model-discrimination d
 
 ### Model Space
 
-$$PMS_1$$
+$PMS_1$
 
 Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
 
