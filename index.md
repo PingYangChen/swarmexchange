@@ -19,6 +19,10 @@ This webpage collects the balanced and unbalanced optimal model-discrimination d
 ### Design Criteria
 
 $$\overline{AF} = \frac{1}{|\mathcal{F}|\left(|\mathcal{F}| - 1\right)}\sum_{i=1}^{|\mathcal{F}|}\sum_{j \neq i}AF_{ij}$$
+where
+$$AF_{ij} = \frac{1}{p_i^{(j)}}\log{\det{\left(\mathbf{M}_i^{(j)}\right)}},$$
+and
+$\mathbf{M}_i^{(j)} = {\mathbf{X}_i^{(j)}}'(\mathbf{I} - \mathbf{H}_j)\mathbf{X}_i^{(j)}$ is the Fisher information matrix for model $f_i^{(j)}$ and $\mathbf{H}_j = \mathbf{X}_j\left(\mathbf{X}'_j\mathbf{X}_j\right)^{-1}\mathbf{X}'_j$.
 
 ### Algorithm
 
