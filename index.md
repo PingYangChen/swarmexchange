@@ -6,6 +6,8 @@ This webpage collects the balanced and unbalanced optimal model-discrimination d
 
 $$PMS_1$$
 
+$$\lambda$$
+
 Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
 
 ```markdown
