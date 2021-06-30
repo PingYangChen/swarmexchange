@@ -14,6 +14,8 @@
 
 This webpage collects the balanced and unbalanced optimal model-discrimination designs generated
 
+[Link to Header](#balanced-design)
+
 ### Model Space
 
 ### Design Criteria
