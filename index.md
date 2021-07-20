@@ -36,13 +36,26 @@ $$\overline{AF} = \frac{1}{|\mathcal{F}|\left(|\mathcal{F}| - 1\right)}\sum_{i=1
 
 #### Exchange Algorithms
 
+- Coordinate Exchange Algorithm
+---
+---
+
+- Columnwise-pairwise Exchange Algorithm
+
+---
+---
+
 #### Particle Swarm Exchange Algorithm
+
+
+
+---
 1. Given $S$, $t_{max}$, $\omega_{max}$, $\omega_{min}$, $\rho$, $q_c$, $q_r$.
 2. Initialize a swarm of $S$ designs and compute the optimal design criterion values by $\Phi$.
 3. Initialize the local ${L}_{s}$, $s = 1, \ldots, S$, and global best $G$.
 4. Initialize $\omega^{(0)} = \omega_{max}$
 5. **for** $t = 1$ **to** $t_{max}$
-    * (5.1) Update $\omega^{(t)}$, $\omega^{(t)}_L$, $\omega^{(t)}_G$ by (1), (2), and update $e^{(t)}$ by (3), (4).
+    * (5.1) Update $\omega^{(t)}$, $\omega^{(t)}_L$, $\omega^{(t)}_G$ and update $e^{(t)}$.
     * (5.2) **for** $s = 1$ **to** $S$
         * (a) Generate a design randomly and set it to be $\mathbf{R}^{(t)}$.
         * (b) Randomly draw $u_\omega\sim\text{Unif}[0,1]$.
@@ -58,7 +71,7 @@ $$\overline{AF} = \frac{1}{|\mathcal{F}|\left(|\mathcal{F}| - 1\right)}\sum_{i=1
     * (5.3) Update the local ${L}_{s}$, $s = 1, \ldots, S$, and global best $G$.
 6. **end**
 7. Output $G$ and its optimal design criterion value $\Phi(G)$.
- 
+---
 
 ### Collection of Model-discrimination Designs
 
