@@ -37,9 +37,32 @@ $$\overline{AF} = \frac{1}{|\mathcal{F}|\left(|\mathcal{F}| - 1\right)}\sum_{i=1
 #### Exchange Algorithms
 
 #### Particle Swarm Exchange Algorithm
+1. Given $S$, $t_{max}$, $\omega_{max}$, $\omega_{min}$, $\rho$, $q_c$, $q_r$.
+2. Initialize a swarm of $S$ designs and compute the optimal design criterion values by $\Phi$.
+3. Initialize  the local ${L}_{s}$, $s = 1, \ldots, S$, and global best $G$.
+4. Initialize $\omega^{(0)}=\omega_{max}$
+5. **for** $t = 1$ to $t_{max}$
+    5-1. Update $\omega^{(t)}$, $\omega^{(t)}_L$, $\omega^{(t)}_G$ by \ref{eq:inertia1}, \ref{eq:inertia2}, and update $e^{(t)}$ by \ref{eq:psvar1}, \ref{eq:psvar2}.
+    5-2. **for** $s = 1$ to $S$
+        5-3. Generate a design randomly and set it to be $\mathbf{R}^{(t)}$.
+        5-4. Randomly draw $u_\omega\sim\text{Unif}[0,1]$.
+        5-5. **if** $u_\omega < \omega^{(t)}$
+            - Set $\mathbf{R}^{(t)}$ to be $\mathbf{Q}$.
+        5-6. **else if** $u_\omega\in[\omega^{(t)}, \omega^{(t)}+\omega^{(t)}_L)$
+            - Set the local best design, ${L}_s$, to be $\mathbf{Q}$.
+        5-7. **else**
+            - Set the global best design, $G$, to be $\mathbf{Q}$.
+        5-8. **end**
+        5-9. Perform the COLMIX operator for $\mathbf{D}_s$ and $\mathbf{Q}$ to form $\mathbf{D}^{(C)}_s$.
+        5-10. Perform the ROWMIX operator for $\mathbf{D}_s$ and $\mathbf{Q}$ to form $\mathbf{D}^{(R)}_s$.
+        5-11. Choose between $\mathbf{D}^{(C)}_s$ and $\mathbf{D}^{(R)}_s$ to be the next $\mathbf{D}_s$
+    5-3. **end**
+    5-4. Update the local ${L}_{s}$, $s = 1, \ldots, S$, and global best $G$.
+6. **end**
+7. Output $G$ and its optimal design criterion value $\Phi(G)$.
+ 
 
-
-### Collection
+### Collection of Model-discrimination Designs
 
 #### Balanced Design
 
