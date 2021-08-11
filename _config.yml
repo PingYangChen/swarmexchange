@@ -1,4 +1,5 @@
 theme: jekyll-theme-slate
+classes: wide
 # Build settings
 markdown: kramdown
 usemathjax: true
