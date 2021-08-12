@@ -1,6 +1,4 @@
-layout: splash
-theme: jekyll-theme-slate
-classes: wide
+remote_theme: "mmistakes/minimal-mistakes@4.24.0"
 # Build settings
 markdown: kramdown
 usemathjax: true
