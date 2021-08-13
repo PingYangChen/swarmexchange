@@ -78,8 +78,8 @@ arma::mat DESIGNCRITERION(double &DESIGN_VAL, const mat &DESIGN, const DESIGN_IN
 			break;
 		}
 		case 3:
-		{	// As bar
-			valMat.fill(1e20);
+		{	// Neg As bar
+			valMat.fill(-1e20);
 			valMat.diag().zeros();
 			for (int j = 0; j < nModel; j++) {
 				arma::mat Xj = getModelMatrix(DESIGN, D_INFO.modelIndices.slice(j), D_INFO);
@@ -96,11 +96,11 @@ arma::mat DESIGNCRITERION(double &DESIGN_VAL, const mat &DESIGN, const DESIGN_IN
 						arma::mat Xij = getModelMatrix(DESIGN, modelDiff, D_INFO);
 						arma::mat Mij = Xij.t() * IminusHj * Xij;
 						double detM = arma::det(Mij);
-						if ((arma::rcond(Mij) > 1e-18) & (detM > 0)) { valMat(i,j) = arma::trace(Mij.i())/pij; } 
+						if ((arma::rcond(Mij) > 1e-18) & (detM > 0)) { valMat(i,j) = (-1.0)*arma::trace(Mij.i())/pij; } 
 					}
 				}
 			}
-			DESIGN_VAL = (-1.0)*arma::accu(valMat)/(nModel_double*(nModel_double - 1.0));
+			DESIGN_VAL = arma::accu(valMat)/(nModel_double*(nModel_double - 1.0));
 			break;
 		}
 		case 4:
