@@ -71,6 +71,9 @@ $$\overline{AF} = \frac{1}{|\mathcal{F}|\left(|\mathcal{F}| - 1\right)}\sum_{i=1
     * (5.3) Update the local ${L}_{s}$, $s = 1, \ldots, S$, and global best $G$.
 6. **end**
 7. Output $G$ and its optimal design criterion value $\Phi(G)$.
+
+
+
 ---
 
 ### Collection of Model-discrimination Designs
@@ -84,6 +87,7 @@ $$\overline{AF} = \frac{1}{|\mathcal{F}|\left(|\mathcal{F}| - 1\right)}\sum_{i=1
 | PMS_3 | [AFbar_balance_PMS(3)_n12_m4](https://github.com/PingYangChen/swarmexchange/blob/master/mddesigns/AFbar_balance_PMS(3)_n12_m4.txt) | [AFbar_balance_PMS(3)_n12_m5](https://github.com/PingYangChen/swarmexchange/blob/master/mddesigns/AFbar_balance_PMS(3)_n12_m5.txt) | [AFbar_balance_PMS(3)_n12_m6](https://github.com/PingYangChen/swarmexchange/blob/master/mddesigns/AFbar_balance_PMS(3)_n12_m6.txt) | [AFbar_balance_PMS(3)_n12_m7](https://github.com/PingYangChen/swarmexchange/blob/master/mddesigns/AFbar_balance_PMS(3)_n12_m7.txt) | [AFbar_balance_PMS(3)_n12_m8](https://github.com/PingYangChen/swarmexchange/blob/master/mddesigns/AFbar_balance_PMS(3)_n12_m8.txt) |
 | MEPI_1 | [AFbar_balance_MEPI(1)_n12_m4](https://github.com/PingYangChen/swarmexchange/blob/master/mddesigns/AFbar_balance_MEPI(1)_n12_m4.txt) | [AFbar_balance_MEPI(1)_n12_m5](https://github.com/PingYangChen/swarmexchange/blob/master/mddesigns/AFbar_balance_MEPI(1)_n12_m5.txt) | [AFbar_balance_MEPI(1)_n12_m6](https://github.com/PingYangChen/swarmexchange/blob/master/mddesigns/AFbar_balance_MEPI(1)_n12_m6.txt) | [AFbar_balance_MEPI(1)_n12_m7](https://github.com/PingYangChen/swarmexchange/blob/master/mddesigns/AFbar_balance_MEPI(1)_n12_m7.txt) | [AFbar_balance_MEPI(1)_n12_m8](https://github.com/PingYangChen/swarmexchange/blob/master/mddesigns/AFbar_balance_MEPI(1)_n12_m8.txt) |
 | MEPI_2 | [AFbar_balance_MEPI(2)_n12_m4](https://github.com/PingYangChen/swarmexchange/blob/master/mddesigns/AFbar_balance_MEPI(2)_n12_m4.txt) | [AFbar_balance_MEPI(2)_n12_m5](https://github.com/PingYangChen/swarmexchange/blob/master/mddesigns/AFbar_balance_MEPI(2)_n12_m5.txt) | [AFbar_balance_MEPI(2)_n12_m6](https://github.com/PingYangChen/swarmexchange/blob/master/mddesigns/AFbar_balance_MEPI(2)_n12_m6.txt) | [AFbar_balance_MEPI(2)_n12_m7](https://github.com/PingYangChen/swarmexchange/blob/master/mddesigns/AFbar_balance_MEPI(2)_n12_m7.txt) | [AFbar_balance_MEPI(2)_n12_m8](https://github.com/PingYangChen/swarmexchange/blob/master/mddesigns/AFbar_balance_MEPI(2)_n12_m8.txt) |
+
 #### 12-run unbalance $\overline{AF}$-optimal designs
  
 | Model Space / m | 4 | 5 | 6 | 7 | 8 |
