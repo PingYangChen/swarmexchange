@@ -79,15 +79,15 @@ arma::mat DESIGNCRITERION(double &DESIGN_VAL, const mat &DESIGN, const DESIGN_IN
 		}
 		case 3:
 		{	// As bar
+			valMat.fill(1e20);
+			valMat.diag().zeros();
 			for (int j = 0; j < nModel; j++) {
 				arma::mat Xj = getModelMatrix(DESIGN, D_INFO.modelIndices.slice(j), D_INFO);
 				arma::mat XXj = Xj.t() * Xj;
 				if (arma::rcond(XXj) < 1e-18) { break; }
 				arma::mat XXjInv(XXj.n_rows, XXj.n_rows, fill::zeros);
 				IS_NONSINGULAR = arma::inv(XXjInv, XXj);
-				if (!IS_NONSINGULAR) {
-  				break;
-				}
+				if (!IS_NONSINGULAR) { break; }
 				arma::mat IminusHj = EYE - (Xj * XXjInv * Xj.t());
 				for (int i = 0; i < nModel; i++) {
 					if (i != j) {
@@ -96,7 +96,7 @@ arma::mat DESIGNCRITERION(double &DESIGN_VAL, const mat &DESIGN, const DESIGN_IN
 						arma::mat Xij = getModelMatrix(DESIGN, modelDiff, D_INFO);
 						arma::mat Mij = Xij.t() * IminusHj * Xij;
 						double detM = arma::det(Mij);
-						if ((arma::rcond(Mij) > 1e-18) & (detM > 0)) valMat(i,j) = arma::trace(Mij.i())/pij;
+						if ((arma::rcond(Mij) > 1e-18) & (detM > 0)) { valMat(i,j) = arma::trace(Mij.i())/pij; } 
 					}
 				}
 			}
