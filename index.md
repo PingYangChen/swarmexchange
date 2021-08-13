@@ -14,9 +14,7 @@
 
 This webpage collects the balanced and unbalanced optimal model-discrimination designs generated
 
-Quick link to design collections:
-- [Balanced Design](#balanced-design)
-- [Unbalanced Design](#unbalanced-design)
+Quick link to design collections [Go to](#collection-of-model-discrimination-designs)
 
 ### Model Space
 
@@ -73,8 +71,6 @@ $$\overline{AF} = \frac{1}{|\mathcal{F}|\left(|\mathcal{F}| - 1\right)}\sum_{i=1
 7. Output $G$ and its optimal design criterion value $\Phi(G)$.
 
 
-
----
 
 ### Collection of Model-discrimination Designs
 
