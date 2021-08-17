@@ -16,7 +16,8 @@ This webpage collects the two-level balanced and unbalanced optimal model-discri
 
 Chen P.-Y., Chen, R.-B., Li, J.-P. and Li, W. (2021+). Particle Swarm Exchange Algorithms with Applications in Generating Optimal Model-Discrimination Designs. *Preprint*.
 
-$\blacktriangleright$ [Click here](#collection-of-model-discrimination-designs) to the lists of model-discrimination design collections.
+$\blacktriangleright$ [**CLICK HERE**](https://github.com/PingYangChen/swarmexchange/blob/master/run.R) to the example codes for finding to model-discrimination designs.
+$\blacktriangleright$ [**CLICK HERE**](#collection-of-model-discrimination-designs) to jump to the lists of model-discrimination design collections.
 
 
 ## Model Space
@@ -36,62 +37,30 @@ There are three types of model-discrimination design criteria based on the FIM (
 
 The $\overline{AF}$-optimal design **maximizes** the average log-determinant values of the nonsingular FIMs for all pairs of $f_i$ and $f_j$ in $\mathcal{F}$, that is,
 
-<br>
-
 $\overline{AF} = \frac{1}{|\mathcal{F}|\left(|\mathcal{F}| - 1\right)}
     \sum_{i=1}^{|\mathcal{F}|}\sum_{j \neq i}AF_{ij}
 ~\text{ where }~
 AF_{ij} = \frac{1}{p_i^{(j)}}
     \log{\det{\left(\mathbf{M}_i^{(j)}\right)}}$
-<br>
+<br><br>
 
 The $\overline{A^S}$-optimal design **minimizes** the average trace values of the inverse matrix of the nonsingular FIMs for all pairs of $f_i$ and $f_j$ in $\mathcal{F}$, that is,
-
-<br>
 
 $\overline{A^S} = \frac{1}{|\mathcal{F}|\left(|\mathcal{F}| - 1\right)}
     \sum_{i=1}^{|\mathcal{F}|}\sum_{j \neq i}A^S_{ij}
 ~\text{ where }~
 A^S_{ij} = \frac{1}{p_i^{(j)}}
     \mbox{trace}{\left(\mathbf{M}_i^{(j)}\right)^{-1}}$
-<br>
+<br><br>
 
 The averaged Expected Noncentrality Parameter, $\overline{ENCP}$, -optimal design **maximizes** the average trace values of the nonsingular FIMs for all pairs of $f_i$ and $f_j$ in $\mathcal{F}$, that is,
-
-<br>
 
 $\overline{ENCP} = \frac{1}{|\mathcal{F}|\left(|\mathcal{F}| - 1\right)}
     \sum_{i=1}^{|\mathcal{F}|}\sum_{j \neq i}ENCP_{ij}
 ~\text{ where }~
 ENCP_{ij} = \frac{1}{p_i^{(j)}}
     \mbox{trace}{\left(\mathbf{M}_i^{(j)}\right)}$
-<br>
-
-## Particle Swarm Exchange Algorithm
-
-
----
-1. Given $S$, $t_{max}$, $\omega_{max}$, $\omega_{min}$, $\rho$, $q_c$, $q_r$.
-2. Initialize a swarm of $S$ designs and compute the optimal design criterion values by $\Phi$.
-3. Initialize the local ${L}_{s}$, $s = 1, \ldots, S$, and global best $G$.
-4. Initialize $\omega^{(0)} = \omega_{max}$
-5. **for** $t = 1$ **to** $t_{max}$
-    * (5.1) Update $\omega^{(t)}$, $\omega^{(t)}_L$, $\omega^{(t)}_G$ and update $e^{(t)}$.
-    * (5.2) **for** $s = 1$ **to** $S$
-        * (a) Generate a design randomly and set it to be $\mathbf{R}^{(t)}$.
-        * (b) Randomly draw $u_\omega\sim\text{Unif}[0,1]$.
-        * (c) **if** $u_\omega < \omega^{(t)}$
-            * Set $\mathbf{R}^{(t)}$ to be $\mathbf{Q}$.
-        * (d) **else if** $u_\omega \in [ \omega^{(t)}, \omega^{(t)} + \omega^{(t)}_L )$
-            * Set the local best design, ${L}_s$, to be $\mathbf{Q}$.
-        * (e) **else**
-            * Set the global best design, $G$, to be $\mathbf{Q}$.
-        * (f) Perform the COLMIX operator for $\mathbf{D}_s$ and $\mathbf{Q}$ to form $\mathbf{D}^{(C)}_s$.
-        * (g) Perform the ROWMIX operator for $\mathbf{D}_s$ and $\mathbf{Q}$ to form $\mathbf{D}^{(R)}_s$.
-        * (h) Choose between $\mathbf{D}^{(C)}_s$ and $\mathbf{D}^{(R)}_s$ to be the next $\mathbf{D}_s$
-    * (5.3) Update the local ${L}_{s}$, $s = 1, \ldots, S$, and global best $G$.
-6. **end**
-7. Output $G$ and its optimal design criterion value $\Phi(G)$.
+<br><br>
 
 
 
