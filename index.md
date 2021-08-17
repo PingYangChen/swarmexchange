@@ -17,6 +17,7 @@ This webpage collects the two-level balanced and unbalanced optimal model-discri
 Chen P.-Y., Chen, R.-B., Li, J.-P. and Li, W. (2021+). Particle Swarm Exchange Algorithms with Applications in Generating Optimal Model-Discrimination Designs. *Preprint*.
 
 $\blacktriangleright$ [**CLICK HERE**](https://github.com/PingYangChen/swarmexchange/blob/master/run.R) to the example codes for finding to model-discrimination designs.
+
 $\blacktriangleright$ [**CLICK HERE**](#collection-of-model-discrimination-designs) to jump to the lists of model-discrimination design collections.
 
 
