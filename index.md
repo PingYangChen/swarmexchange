@@ -25,7 +25,7 @@ Let $\mathcal{F}$ be the set of linear models with $m$ main effects and some two
 
 ### $MEPI_g$ Space 
 
-The "Main Effects Plus $g$ Interactions" model space (Agboto et al., 2010; Jones et al., 2007; Li and Nachtsheim, 2000; Sun, 1994) consists of linear models with all ($m$) main effects and $g$ active two-factor interactions. The higher-order interactions are assumed to be negligible. The size of the $MEPI_g$ model space is ${{m \choose 2} \choose g}$. 
+The "Main Effects Plus $g$ Interactions" model space (Agboto et al., 2010; Jones et al., 2007; Li and Nachtsheim, 2000; Sun, 1994) consists of linear models with all ($m$) main effects and $g$ active two-factor interactions. The higher-order interactions are assumed to be negligible. The size of the $MEPI_g$ model space is ${m \choose 2} \choose g$. 
 
 ### $PMS_q$ Space 
 
