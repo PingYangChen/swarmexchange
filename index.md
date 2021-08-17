@@ -66,7 +66,7 @@ ENCP_{ij} = \frac{1}{p_i^{(j)}}
 
 
 
-### Collection of Model-discrimination Designs
+## Collection of Model-discrimination Designs
 
  
 #### 12-run balance $\overline{AF}$-optimal designs
