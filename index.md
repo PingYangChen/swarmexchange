@@ -23,13 +23,9 @@ $\blacktriangleright$ [Click here](#collection-of-model-discrimination-designs) 
 
 Let $\mathcal{F}$ be the set of linear models with $m$ main effects and some two-factor interactions that are possibly useful for the experiment data. There are two types of model spaces, namely, $\mathcal{F}=MEPI_g$ and $\mathcal{F}=PMS_q$, considered in this website. 
 
-### $MEPI_g$ Space 
+The "Main Effects Plus $g$ Interactions", $MEPI_g$, model space (Agboto et al., 2010; Jones et al., 2007; Li and Nachtsheim, 2000; Sun, 1994) consists of linear models with all ($m$) main effects and $g$ active two-factor interactions. The higher-order interactions are assumed to be negligible. The size of the $MEPI_g$ model space is ${m \choose 2} \choose g$. 
 
-The "Main Effects Plus $g$ Interactions" model space (Agboto et al., 2010; Jones et al., 2007; Li and Nachtsheim, 2000; Sun, 1994) consists of linear models with all ($m$) main effects and $g$ active two-factor interactions. The higher-order interactions are assumed to be negligible. The size of the $MEPI_g$ model space is ${m \choose 2} \choose g$. 
-
-### $PMS_q$ Space 
-
-The "Projective Model Space of dimension $q$" model space (Loeppky et al., 2007) consists of linear models with only $q$ out of $m$ main effects and all corresponding two-factor interactions of the $q$ main effects. The higher-order interactions are assumed to be negligible. The size of the $PMS_q$ model space is ${m\choose q}$.
+The "Projective Model Space of dimension $q$", $PMS_q$, model space (Loeppky et al., 2007) consists of linear models with only $q$ out of $m$ main effects and all corresponding two-factor interactions of the $q$ main effects. The higher-order interactions are assumed to be negligible. The size of the $PMS_q$ model space is ${m\choose q}$.
 
 
 ## Model-Discrimination Design Criteria
@@ -38,36 +34,65 @@ Suppose there are $n$ design points. Given model space $\mathcal{F}$ and two mod
 
 There are three types of model-discrimination design criteria based on the FIM (Agboto et al., 2010) considered in this website.
 
-### $\overline{AF}$-optimal Criterion
-
 The $\overline{AF}$-optimal design **maximizes** the average log-determinant values of the nonsingular FIMs for all pairs of $f_i$ and $f_j$ in $\mathcal{F}$, that is,
+
+<br>
 
 $\overline{AF} = \frac{1}{|\mathcal{F}|\left(|\mathcal{F}| - 1\right)}
     \sum_{i=1}^{|\mathcal{F}|}\sum_{j \neq i}AF_{ij}
 ~\text{ where }~
 AF_{ij} = \frac{1}{p_i^{(j)}}
     \log{\det{\left(\mathbf{M}_i^{(j)}\right)}}$
-
-### $\overline{A_S}$-optimal Criterion
-
+<br>
 
 The $\overline{A^S}$-optimal design **minimizes** the average trace values of the inverse matrix of the nonsingular FIMs for all pairs of $f_i$ and $f_j$ in $\mathcal{F}$, that is,
+
+<br>
 
 $\overline{A^S} = \frac{1}{|\mathcal{F}|\left(|\mathcal{F}| - 1\right)}
     \sum_{i=1}^{|\mathcal{F}|}\sum_{j \neq i}A^S_{ij}
 ~\text{ where }~
 A^S_{ij} = \frac{1}{p_i^{(j)}}
     \mbox{trace}{\left(\mathbf{M}_i^{(j)}\right)^{-1}}$
-
-### $\overline{ENCP}$-optimal Criterion
+<br>
 
 The averaged Expected Noncentrality Parameter, $\overline{ENCP}$, -optimal design **maximizes** the average trace values of the nonsingular FIMs for all pairs of $f_i$ and $f_j$ in $\mathcal{F}$, that is,
+
+<br>
 
 $\overline{ENCP} = \frac{1}{|\mathcal{F}|\left(|\mathcal{F}| - 1\right)}
     \sum_{i=1}^{|\mathcal{F}|}\sum_{j \neq i}ENCP_{ij}
 ~\text{ where }~
 ENCP_{ij} = \frac{1}{p_i^{(j)}}
     \mbox{trace}{\left(\mathbf{M}_i^{(j)}\right)}$
+<br>
+
+## Particle Swarm Exchange Algorithm
+
+
+---
+1. Given $S$, $t_{max}$, $\omega_{max}$, $\omega_{min}$, $\rho$, $q_c$, $q_r$.
+2. Initialize a swarm of $S$ designs and compute the optimal design criterion values by $\Phi$.
+3. Initialize the local ${L}_{s}$, $s = 1, \ldots, S$, and global best $G$.
+4. Initialize $\omega^{(0)} = \omega_{max}$
+5. **for** $t = 1$ **to** $t_{max}$
+    * (5.1) Update $\omega^{(t)}$, $\omega^{(t)}_L$, $\omega^{(t)}_G$ and update $e^{(t)}$.
+    * (5.2) **for** $s = 1$ **to** $S$
+        * (a) Generate a design randomly and set it to be $\mathbf{R}^{(t)}$.
+        * (b) Randomly draw $u_\omega\sim\text{Unif}[0,1]$.
+        * (c) **if** $u_\omega < \omega^{(t)}$
+            * Set $\mathbf{R}^{(t)}$ to be $\mathbf{Q}$.
+        * (d) **else if** $u_\omega \in [ \omega^{(t)}, \omega^{(t)} + \omega^{(t)}_L )$
+            * Set the local best design, ${L}_s$, to be $\mathbf{Q}$.
+        * (e) **else**
+            * Set the global best design, $G$, to be $\mathbf{Q}$.
+        * (f) Perform the COLMIX operator for $\mathbf{D}_s$ and $\mathbf{Q}$ to form $\mathbf{D}^{(C)}_s$.
+        * (g) Perform the ROWMIX operator for $\mathbf{D}_s$ and $\mathbf{Q}$ to form $\mathbf{D}^{(R)}_s$.
+        * (h) Choose between $\mathbf{D}^{(C)}_s$ and $\mathbf{D}^{(R)}_s$ to be the next $\mathbf{D}_s$
+    * (5.3) Update the local ${L}_{s}$, $s = 1, \ldots, S$, and global best $G$.
+6. **end**
+7. Output $G$ and its optimal design criterion value $\Phi(G)$.
+
 
 
 ### Collection of Model-discrimination Designs
