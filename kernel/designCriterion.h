@@ -130,12 +130,13 @@ arma::mat DESIGNCRITERION(double &DESIGN_VAL, const mat &DESIGN, const DESIGN_IN
 			break;
 		}
 		case 5:
-		{ // Averaged D-optimal?
+		{ // Information Criterion
 			for (int j = 0; j < nModel; j++) {
 				arma::mat Xj = getModelMatrix(DESIGN, D_INFO.modelIndices.slice(j), D_INFO);
 				arma::mat XXj = Xj.t() * Xj;
+				double localDetApprox = std::pow((double)Xj.n_rows, (double)Xj.n_cols);
 				double detM = arma::det(XXj);
-				valMat(j, 0) = std::log(detM)/((double)Xj.n_cols); 
+				valMat(j, 0) = detM/localDetApprox; 
 			}
 			DESIGN_VAL = arma::accu(valMat.col(0))/nModel_double;
 			break;
