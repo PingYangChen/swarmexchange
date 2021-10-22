@@ -8,6 +8,7 @@ double MIX_OPERATOR(const int &MIX_PROC, arma::mat &MIX, const arma::mat &DESIGN
 double MIX_OPERATOR(const int &MIX_PROC, arma::mat &MIX, const arma::mat &DESIGN_A, const double &VAL_A, const arma::mat &DESIGN_B, 
 										const int &maximize, const DESIGN_INFO &D_INFO, const PSO_OPTIONS &PSO_OPTS, const PSO_DYN &PSO_DYN)
 {
+	int typeCrit = D_INFO.typeCrit;
 	double MIX_VAL = VAL_A; double DESIGN_VAL;
 	MIX = DESIGN_A;
 	uword DELETE_WHO = 0; uword ADD_WHO = 0; arma::mat ADD_ONE_BACK = MIX;
@@ -26,15 +27,27 @@ double MIX_OPERATOR(const int &MIX_PROC, arma::mat &MIX, const arma::mat &DESIGN
 				// Deletion
 				arma::mat DESIGN_VAL_MAT = DESIGNCRITERION(MIX_VAL, MIX, D_INFO, -1);
 				valVec.fill(arma::accu(DESIGN_VAL_MAT));
-				countVec.fill((double)(D_INFO.nModel*(D_INFO.nModel - 1)));
-				for (int j = 0; j < nModel; j++) {
-					for (int i = 0; i < nModel; i++) {
-						if (i != j) {
-							double pij; 
-							arma::imat modelDiff = getDiffIdx(pij, D_INFO.modelIndices.slice(i), D_INFO.modelIndices.slice(j));
-							for (uword k = 0; k < modelDiff.n_cols; k++) {
-								if (arma::any(modelDiff.col(k) == 1)) {
-									valVec(k) -= DESIGN_VAL_MAT(i, j); countVec(k) -= 1.0;
+				if ((typeCrit == 0) | (typeCrit == 5)) {
+					countVec.fill((double)(D_INFO.nModel));
+					for (int j = 0; j < nModel; j++) {
+						arma::imat tmpModel = D_INFO.modelIndices.slice(j);
+						for (uword k = 0; k < tmpModel.n_cols; k++) {
+							if (arma::accu(tmpModel.col(k)) > 1) {
+								valVec(k) -= DESIGN_VAL_MAT(j, 0); countVec(k) -= 1.0;
+							}
+						}
+					}
+				} else {
+					countVec.fill((double)(D_INFO.nModel*(D_INFO.nModel - 1)));
+					for (int j = 0; j < nModel; j++) {
+						for (int i = 0; i < nModel; i++) {
+							if (i != j) {
+								double pij; 
+								arma::imat modelDiff = getDiffIdx(pij, D_INFO.modelIndices.slice(i), D_INFO.modelIndices.slice(j));
+								for (uword k = 0; k < modelDiff.n_cols; k++) {
+									if (arma::any(modelDiff.col(k) == 1)) {
+										valVec(k) -= DESIGN_VAL_MAT(i, j); countVec(k) -= 1.0;
+									}
 								}
 							}
 						}

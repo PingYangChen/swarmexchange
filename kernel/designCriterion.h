@@ -1,7 +1,7 @@
 
 // DECLARE FUNCTIONS
 arma::mat DESIGNCRITERION(double &DESIGN_VAL, const mat &DESIGN, const DESIGN_INFO &D_INFO, int typeCrit);
-double EstCapacityCalc(const mat &DESIGN, const DESIGN_INFO &D_INFO);
+double EstCapacityCalc(vec &ec, const mat &DESIGN, const DESIGN_INFO &D_INFO);
 arma::mat getModelMatrix(const mat &DESIGN, const imat &MODEL, const DESIGN_INFO &D_INFO);
 arma::imat getDiffIdx(double &pij, const imat &MODEL_I, const imat &MODEL_J);
 
@@ -18,7 +18,9 @@ arma::mat DESIGNCRITERION(double &DESIGN_VAL, const mat &DESIGN, const DESIGN_IN
 	switch (typeCrit) {
 		case 0:
 		{
-			DESIGN_VAL = EstCapacityCalc(DESIGN, D_INFO);
+			vec ec(nModel, fill::zeros);
+			DESIGN_VAL = EstCapacityCalc(ec, DESIGN, D_INFO);
+			valMat.col(0) = ec;
 			break;
 		}
 		case 1: 
@@ -134,9 +136,8 @@ arma::mat DESIGNCRITERION(double &DESIGN_VAL, const mat &DESIGN, const DESIGN_IN
 			for (int j = 0; j < nModel; j++) {
 				arma::mat Xj = getModelMatrix(DESIGN, D_INFO.modelIndices.slice(j), D_INFO);
 				arma::mat XXj = Xj.t() * Xj;
-				double localDetApprox = std::pow((double)Xj.n_rows, (double)Xj.n_cols);
 				double detM = arma::det(XXj);
-				valMat(j, 0) = detM/localDetApprox; 
+				valMat(j, 0) = std::pow(detM, 1.0/(double)Xj.n_cols)/(double)Xj.n_rows; 
 			}
 			DESIGN_VAL = arma::accu(valMat.col(0))/nModel_double;
 			break;
@@ -145,14 +146,16 @@ arma::mat DESIGNCRITERION(double &DESIGN_VAL, const mat &DESIGN, const DESIGN_IN
 	return valMat;
 }
 
-double EstCapacityCalc(const mat &DESIGN, const DESIGN_INFO &D_INFO)
+double EstCapacityCalc(vec &ec, const mat &DESIGN, const DESIGN_INFO &D_INFO)
 {
 	double val = 0;
 	int nModel = D_INFO.nModel;
 	for (int i = 0; i < nModel; i++) {
 		arma::mat Xi = getModelMatrix(DESIGN, D_INFO.modelIndices.slice(i), D_INFO);
 		arma::mat inforMat = Xi.t() * Xi;
-		if (arma::rcond(inforMat) > 1e-18) val++; 
+		if (arma::rcond(inforMat) > 1e-18) {
+			ec(i) = 1; val++;
+		} 
 	}
 	val = val/((double)nModel);
 	return val;
