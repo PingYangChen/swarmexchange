@@ -57,6 +57,7 @@ void PSO_MAIN(Ptr_PSO_Result Ptr_PSO_Result, const PSO_OPTIONS &PSO_OPTS, const 
   fPBestHist.col(0) = fPBest;
   // Initialize PSO DYNAMIC PARAMETERS
   psoUpdateDynPara(fGBest, fPBest, fGBestHist, PSO_OPTS, -1, PSO_DYN);
+  arma::umat WHICH_MIX(PSO_OPTS.maxIter, PSO_OPTS.nSwarm, fill::zeros);
 
 	if (VERBOSE) Rprintf("DONE \n"); 
 	
@@ -68,7 +69,9 @@ void PSO_MAIN(Ptr_PSO_Result Ptr_PSO_Result, const PSO_OPTIONS &PSO_OPTS, const 
 			if (t == (maxIter - 1)) { Rprintf("\n"); }
 		}
 		// UPDATE PARTICLES
-    psoUpdateParticle(D_INFO, PSO_OPTS, PSO_DYN, PBest, GBest, fPBest, fGBest, swarm, fSwarm);
+    arma::urowvec WHICH_MIX_THIS_ITER(PSO_OPTS.nSwarm, fill::zeros);
+    psoUpdateParticle(D_INFO, PSO_OPTS, PSO_DYN, PBest, GBest, fPBest, fGBest, swarm, fSwarm, WHICH_MIX_THIS_ITER);
+    WHICH_MIX.row(t) = WHICH_MIX_THIS_ITER;
     // UPDATING THE LOCAL BEST
     // UPDATING THE GLOBAL BEST
     if (maximize == 0) {
@@ -115,6 +118,7 @@ void PSO_MAIN(Ptr_PSO_Result Ptr_PSO_Result, const PSO_OPTIONS &PSO_OPTS, const 
   Ptr_PSO_Result->fPBest = fPBest;
   Ptr_PSO_Result->fPBestHist = fPBestHist;
 	//Ptr_PSO_Result->updateRec = updateRec;
+  Ptr_PSO_Result->WHICH_MIX = WHICH_MIX;
   Ptr_PSO_Result->exAlgTrig = PSO_DYN.EXALG_TRIGGER;
 }
 

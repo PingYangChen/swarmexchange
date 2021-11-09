@@ -46,7 +46,7 @@ typedef struct {
   int JFO_R_DUR; // (int)(w_var*maxIter);
   double JFO_R_CUR; // w0;
   double JFO_R_DEC; // (w0 - w1)/w_varyfor;
-  // Temperature of Applying Exchange Algorithm in MIX Operator
+  // TV and SV for Applying Exchange Algorithm in MIX Operator
   double EXALG_PROB;
   arma::mat EXALG_TRIGGER;
 } PSO_DYN, *Ptr_PSO_DYN;
@@ -77,6 +77,7 @@ typedef struct {
   arma::mat fPBestHist;	
 	arma::imat updateRec;
 	//arma::mat JumpProb;
+  arma::umat WHICH_MIX;
 	arma::mat exAlgTrig;
 } PSO_Result, *Ptr_PSO_Result;
 
@@ -109,8 +110,9 @@ void getAlgStruct(Ptr_PSO_OPTIONS Ptr_PSO_OPT, const Rcpp::List &ALG_INFO_LIST);
 void getModelIndices(arma::icube &modelIndices, const arma::imat &modelSpace, const int &nMainEff, const int &nTwofi);
 void PSO_MAIN(Ptr_PSO_Result Ptr_PSO_Result, const PSO_OPTIONS &PSO_OPTS, const DESIGN_INFO &D_INFO, bool VERBOSE);
 void psoUpdateParticle(const DESIGN_INFO &D_INFO, const PSO_OPTIONS &PSO_OPTS, const PSO_DYN &PSO_DYN, 
-											 const arma::mat &PBest, const arma::rowvec &GBest, 
-											 const arma::vec &fPBest, const double &fGBest, arma::mat &swarm, arma::vec &fSwarm);
+											 const arma::mat &PBest, const arma::mat &GBest, 
+											 const arma::vec &fPBest, const double &fGBest, arma::mat &swarm, arma::vec &fSwarm,
+											 arma::urowvec &WHICH_MIX_THIS_ITER);
 void psoUpdateDynPara(const double &fGBest, const arma::vec &fPBest, const arma::rowvec &fGBestHist, 
 											const PSO_OPTIONS &PSO_OPTS, const int iter, PSO_DYN &PSO_DYN);
 void initDesigns(arma::mat &DESIGN_POOL, const DESIGN_INFO &D_INFO);
@@ -180,13 +182,13 @@ void getInfoStruct(Ptr_DESIGN_INFO Ptr_D_INFO, const Rcpp::List &D_INFO_LIST)
 	arma::rowvec labLevel(labLevelTmp.begin(), labLevelTmp.size(), false);
 	Ptr_D_INFO->labLevel = labLevel;
 	
-	Ptr_D_INFO->nModel = nModel;
 	Ptr_D_INFO->nMainEff = nMainEff;
 	Ptr_D_INFO->nTwofi= nTwofi;
 
 	Rcpp::IntegerMatrix modelSpaceTmp = as<IntegerMatrix>(D_INFO_LIST["modelSpace"]);
 	arma::imat modelSpace(modelSpaceTmp.begin(), modelSpaceTmp.nrow(), modelSpaceTmp.ncol(), false);
-	
+	Ptr_D_INFO->nModel = (int)modelSpace.n_rows;
+
 	arma::icube modelIndices(nMainEff + nTwofi + 1, nFactor, nModel, fill::zeros);
 	getModelIndices(modelIndices, modelSpace, nMainEff, nTwofi);
 	Ptr_D_INFO->modelIndices = modelIndices;

@@ -1,7 +1,8 @@
 
 void psoUpdateParticle(const DESIGN_INFO &D_INFO, const PSO_OPTIONS &PSO_OPTS, const PSO_DYN &PSO_DYN, 
 											 const arma::mat &PBest, const arma::mat &GBest, 
-											 const arma::vec &fPBest, const double &fGBest, arma::mat &swarm, arma::vec &fSwarm)
+											 const arma::vec &fPBest, const double &fGBest, arma::mat &swarm, arma::vec &fSwarm,
+											 arma::urowvec &WHICH_MIX_THIS_ITER)
 {
 	int nSwarm = PSO_OPTS.nSwarm;
   int maximize 	= PSO_OPTS.maximize;
@@ -18,9 +19,11 @@ void psoUpdateParticle(const DESIGN_INFO &D_INFO, const PSO_OPTIONS &PSO_OPTS, c
 					arma::mat DESIGN = swarm.rows(iSwarm*nRun, (iSwarm + 1)*nRun - 1);
 					arma::mat tmpPBest = PBest.rows(iSwarm*nRun, (iSwarm + 1)*nRun - 1);
 					double DESIGN_VAL = fSwarm(iSwarm);
-					UPDATE_PSE(DESIGN, DESIGN_VAL, GBest, tmpPBest, maximize, D_INFO, PSO_OPTS, PSO_DYN);
+					arma::uword USE_MIX;
+					UPDATE_PSE(DESIGN, DESIGN_VAL, USE_MIX, GBest, tmpPBest, maximize, D_INFO, PSO_OPTS, PSO_DYN);
 					swarm.rows(iSwarm*nRun, (iSwarm + 1)*nRun - 1) = DESIGN;
 					fSwarm(iSwarm) = DESIGN_VAL;
+					WHICH_MIX_THIS_ITER(iSwarm) = USE_MIX;
 				}
 			}
 		break;
@@ -92,10 +95,11 @@ void psoUpdateParticle(const DESIGN_INFO &D_INFO, const PSO_OPTIONS &PSO_OPTS, c
 					arma::mat DESIGN_WIN = swarm.rows(WINNER*nRun, (WINNER + 1)*nRun - 1);
 					double DESIGN_VAL = fSwarm(LOSER); double WINNER_VAL = fSwarm(WINNER); 
 					int tmpUPDATE = PSO_UPDATE - 10;
+					arma::uword USE_MIX;
 					switch (tmpUPDATE) {
 						case 0:
 						{
-							UPDATE_PSE(DESIGN, DESIGN_VAL, GMean, DESIGN_WIN, maximize, D_INFO, PSO_OPTS, PSO_DYN);
+							UPDATE_PSE(DESIGN, DESIGN_VAL, USE_MIX, GMean, DESIGN_WIN, maximize, D_INFO, PSO_OPTS, PSO_DYN);
 							break;
 						}
 						case 9:
@@ -106,6 +110,7 @@ void psoUpdateParticle(const DESIGN_INFO &D_INFO, const PSO_OPTIONS &PSO_OPTS, c
 					}
 					swarm.rows(LOSER*nRun, (LOSER + 1)*nRun - 1) = DESIGN;
 					fSwarm(LOSER) = DESIGN_VAL;
+					WHICH_MIX_THIS_ITER(iSwarm) = USE_MIX;
 				}
 			}
 			break;	

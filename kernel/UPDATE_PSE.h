@@ -1,9 +1,9 @@
 
-void UPDATE_PSE(mat &DESIGN, double &DESIGN_VAL, const mat &GBest, const mat &PBest, 
+void UPDATE_PSE(mat &DESIGN, double &DESIGN_VAL, uword &USE_MIX, const mat &GBest, const mat &PBest, 
 								const int &maximize, const DESIGN_INFO &D_INFO, const PSO_OPTIONS &PSO_OPTS, const PSO_DYN &PSO_DYN);
 
 //
-void UPDATE_PSE(mat &DESIGN, double &DESIGN_VAL, const mat &GBest, const mat &PBest, 
+void UPDATE_PSE(mat &DESIGN, double &DESIGN_VAL, uword &USE_MIX, const mat &GBest, const mat &PBest, 
 								const int &maximize, const DESIGN_INFO &D_INFO, const PSO_OPTIONS &PSO_OPTS, const PSO_DYN &PSO_DYN)
 {
 	double JFO_R_CUR = PSO_DYN.JFO_R_CUR;
@@ -47,8 +47,8 @@ void UPDATE_PSE(mat &DESIGN, double &DESIGN_VAL, const mat &GBest, const mat &PB
 	moveCandidate << MIX_COL_VAL << MIX_ROW_VAL << endr;
 	if (maximize == 0) moveCandidate.min(MOVE); else moveCandidate.max(MOVE);
 	switch (MOVE) {
-		case 0: { DESIGN = MIX_COL; DESIGN_VAL = MIX_COL_VAL; break; }
-		case 1: { DESIGN = MIX_ROW; DESIGN_VAL = MIX_ROW_VAL; break; }
+		case 0: { DESIGN = MIX_COL; DESIGN_VAL = MIX_COL_VAL; USE_MIX = 0; break; }
+		case 1: { DESIGN = MIX_ROW; DESIGN_VAL = MIX_ROW_VAL; USE_MIX = 1; break; }
 	}
 
 }
