@@ -1,6 +1,5 @@
 
 codePath <- "SPECIFY THE PATH OF THE 'swarmexchange' FOLDER"
-codePath <- "D:\\rProject\\swarmexchange"
 
 # Check whether the required packages have been installed or not.
 # If not, then install them
