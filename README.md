@@ -9,12 +9,22 @@ To generate the model-discrimination designs, there are three steps:
 
 To run the columnwise-pairwise (CP) exchange algorithm (Li and Wu, 1997) for searching the balanced design, use functions `rGetColPairInfo` and `rDiscreteDesignColPair` in Steps 2 and 3. To run the coordinate exchange algorithm (Meyer and Nachtsheim, 1995) for searching the unbalanced design, use functions `rGetCoorExInfo` and `rDiscreteDesignCoorEx` in Steps 2 and 3. 
 
+Before implementing our `swarmexchange` codes, please run the following R script to make sure that the necessary R packages are installed.
+
+```{r}
+# Check whether the required packages have been installed or not.
+# If not, then install them
+pkgReq <- c("Rcpp", "RcppArmadillo")
+pkgLoc <- installed.packages()[,1]
+for (i in 1:length(pkgReq)) {
+  if (!(pkgReq[i] %in% pkgLoc)) { install.packages(pkgReq[i]) }
+}
+```
 
 #### Reference
 - Chen, P.-Y., Chen, R.-B., Li, J.-P. and Li, W. W. (2021+). Particle Swarm Exchange Algorithms with Applications in Generating Optimal Model-Discrimination Designs. *Preprint*.
 - Li, W., & Wu, C. F. J. (1997). Columnwise-pairwise algorithms with applications to the construction of supersaturated designs. Technometrics, 39 (2), 171–179.
 - Meyer, R. K., & Nachtsheim, C. J. (1995). The coordinate-exchange algorithm for constructing exact optimal experimental designs. Technometrics, 37 (1), 60–69.
-
 
 
 ## Design Problem Specification
@@ -149,42 +159,82 @@ rDiscreteDesignCoorEx(algInfo, designInfo, if_parallel = TRUE, seed = NULL, verb
 
 
 
-
 ## Illustrative Example
 
-**run.R**
+The R script [**run.R**](https://github.com/PingYangChen/swarmexchange/blob/master/run.R) is an example to use the PSE codes.  Suppose target on searching a balanced two-level ![formula](https://render.githubusercontent.com/render/math?math=\color{white}12\times4\overline{AF})-optimal design for discriminating among ![formula](https://render.githubusercontent.com/render/math?math=\color{white}MEPI_2) model space. 
 
 
-
-The R script **run.R** is an example to use the PSE codes. The first step is to determine the model-discrimination design problem through  `rGetDesignInfo` function.
-
-
-
-
-
-
-In PSE algorithm, user first needs to decide the number of particles, \texttt{nSwarm}, and the number of iterations, \texttt{maxIter}. Larger values of them may result the better designs, but the computational cost is higher.
-\texttt{MIX\_C} is the number of columns to be exchanged in the COLMIX operator, and its default value is . Please see Section \ref{sec:pseconf} for details.  \texttt{MIX\_R} is the number of rows to be exchanged in the ROWMIX operator and its default value is fixed as 1. The parameters, \texttt{JFO\_R1}, \texttt{JFO\_R0} and \texttt{JFO\_RHO}, are the probability values, $\omega_{max}$, $\omega_{min}$ and $\rho$ for the MIX operator shown in \eqref{eq:inertia1} and \eqref{eq:inertia2}. Their default values are set as follows, $\omega_{max} = 0.9$, $\omega_{min} = 0.3$ and $\rho = 0.5$. 
-Suppose we want to implement the PSE algorithm with 1000 iterations and 100 particles. In addition, the number of the columns for COLMIX operator is set as 4 and we decide not to involve ROWMIX operator. The others are fixed as the defaulty values. Therefore, we should have the PSE information as follows.\\ 
-%\noindent
-\texttt{algInfo <- rGetAlgInfo(100, 1000, 4, 0)}\\
-
-
-
-In the GitHub repository, we also
-developed the codes for CE and CP algorithms in functions `rDiscreteDesignCoorEx` and `rDiscreteDesignColPair` respectively. To avoid local convergence, it is recommended using multiple initial designs to run CE and CP algorithms. The users can specify the number of initial designs via the option \texttt{nTry} into the algorithms' configuration functions, `rGetCoorExInfo` and `rGetColPairInfo`, and then, the CE and CP functions can run in parallel for these independent trails.  To use CE and CP algorithms, the users can find the example codes in **run.R** file. 
-
+The first step is to determine the model-discrimination design problem through the `rGetDesignInfo` function.
 
 ```{r}
-ceInfo <- rGetCoorExInfo(maxIter = 50, nTry = 5) 
-ceResult <- rDiscreteDesignCoorEx(ceInfo, designInfo, if_parallel = TRUE, seed = NULL, verbose = TRUE) 
-ceResult$RES$DESIGN      # The best design across 'nTry' trails 
-ceResult$RES$DESIGN_VAL # The corresponding design criterion value 
+designInfo <- rGetDesignInfo(typeCrit = 1, n = 12, m = 4, 
+                             mSpName = "MEPI", g = 2, 
+                             balance = 1)
 ```
 
+Second, we choose for the PSE algorithm running with 100 iterations and 32 particles. In addition, the number of the columns for COLMIX operator is set as 1 and we disable the ROWMIX operator to maintain the balance design structure.
+
 ```{r}
-cpInfo <- rGetColPairInfo(maxIter = 50, nTry = 5, CPk = 1)
-cpResult <- rDiscreteDesignColPair(cpInfo, designInfo, if_parallel = TRUE, seed = NULL, verbose = TRUE) 
-cpResult$RES$DESIGN     # The best design across 'nTry' trails 
-cpResult$RES$DESIGN_VAL # The corresponding design criterion value
+algInfo <- rGetAlgInfo(nSwarm = 32, maxIter = 100, 
+                       MIX_C = 1, MIX_R = 0)
 ```
+
+The final step is to run PSE algorithm via the `rDiscreteDesignPSO` function. The necessary inputs are the R objects, `algInfo` and `designInfo`.  For multi-processor parallel computing, we set `if_parallel=TRUE`.  The output of the `rDiscreteDesignPSO` function is an R list object with two variables. The first one `result$RES` include the PSE searching result which is also an R list object. The variable `result$RES$GBest` is the global best design and `result$RES$fGBest` is its corresponding design criterion value. The computing time can be found in `result$CPUTIME` which is recorded in seconds.
+
+```{r}
+res <- rDiscreteDesignPSO(algInfo, designInfo, if_parallel = TRUE, 
+                          seed = NULL, verbose = TRUE)
+#names(res)
+res$RES$fGBest # Global Best AF-bar-optimal criterion value
+res$RES$GBest  # Global Best AF-bar-optimal design
+```
+
+The columnwise-pairwise (CP) exchange algorithm is also used for finding the balanced design. To use our code, the first step is the same that uses the `rGetDesignInfo` function to define the model-discrimination problem. Following the above example, the code for running CP algorithm is presented below.
+
+```{r}
+# Set Parameters for Columnwise-Pairwise (CP) algorithm
+cpAlgInfo <- rGetColPairInfo(maxIter = 100, nTry = 32, 
+                             CPk = 1)
+
+# Run CP algorithm
+cpRes <- rDiscreteDesignColPair(cpAlgInfo, designInfo, if_parallel = TRUE, 
+                                seed = NULL, verbose = TRUE)
+#names(cpRes)
+cpRes$RES$DESIGN_VAL # Overall Best AF-bar-optimal criterion value among multiple trails
+cpRes$RES$DESIGN     # Overall Best AF-bar-optimal design among multiple trails
+```
+
+For unbalanced model-discrimination designs, we can apply the PSE algorithm and coordinate exchange algorithm.  The workflow is similar and we present the example code as below. 
+
+```{r}
+### Unbalanced Design ###
+# The example is the AF-bar-optimal unbalanced design 
+# of n = 12, m = 4 for MEPI space with g = 2.
+designInfo <- rGetDesignInfo(typeCrit = 1, n = 12, m = 4, 
+                             mSpName = "MEPI", g = 2,
+                             balance = 0)
+
+## RUN PSE ALGORITHM ##
+# Set Parameters for PSE algorithm
+algInfo <- rGetAlgInfo(nSwarm = 32, maxIter = 100, 
+                       MIX_C = 1, MIX_R = 1)
+
+# Run PSE algorithm
+res <- rDiscreteDesignPSO(algInfo, designInfo, if_parallel = TRUE, 
+                          seed = NULL, verbose = TRUE)
+#names(res)
+res$RES$fGBest # Global Best AF-bar-optimal criterion value
+res$RES$GBest  # Global Best AF-bar-optimal design
+
+
+## RUN CE ALGORITHM ##
+# Set Parameters for Coordinate Exchange (CE) algorithm
+ceAlgInfo <- rGetCoorExInfo(maxIter = 100, nTry = 32)
+# Run CE algorithm
+ceRes <- rDiscreteDesignCoorEx(ceAlgInfo, designInfo, if_parallel = TRUE, 
+                               seed = NULL, verbose = TRUE)
+#names(ceRes)
+ceRes$RES$DESIGN_VAL # Overall Best AF-bar-optimal criterion value among multiple trails
+ceRes$RES$DESIGN     # Overall Best AF-bar-optimal design among multiple trails
+```
+
