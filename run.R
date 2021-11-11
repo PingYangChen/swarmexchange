@@ -1,4 +1,7 @@
 
+codePath <- "SPECIFY THE PATH OF THE 'swarmexchange' FOLDER"
+codePath <- "D:\\rProject\\swarmexchange"
+
 # Check whether the required packages have been installed or not.
 # If not, then install them
 pkgReq <- c("Rcpp", "RcppArmadillo")
@@ -10,70 +13,71 @@ for (i in 1:length(pkgReq)) {
 # Load packages and codes
 library(Rcpp)
 library(RcppArmadillo)
-kernelPath <- "./kernel"
+kernelPath <- file.path(codePath, "kernel")
 sourceCpp(file.path(kernelPath,"psoRcpp.cpp"), verbose = FALSE)
 source(file.path(kernelPath, "rLaunchTools.r"))
 
 # Begin Instruction
 
 ### Balanced Design ###
-# The example runs for the balanced design of n = 12, m = 4 for MEPI space with g = 1.
-designInfo <- rGetDesignInfo(typeCrit = 1, n = 20, m = 7, 
-                             mSpName = "MEPI", g = 2,
+# The example is the AF-bar-optimal balanced design 
+# of n = 12, m = 4 for MEPI space with g = 2.
+designInfo <- rGetDesignInfo(typeCrit = 1, n = 12, m = 4, 
+                             mSpName = "MEPI", g = 2, 
                              balance = 1)
 
-# Set SIDD algorithm
-algInfo <- rGetAlgInfo(nSwarm = 32, maxIter = 100, PSO_UPDATE = 0,  
-                       JFO_R0 = 0.9, JFO_R1 = 0.3, MIX_C = 1, MIX_R = 0,
-                       HYBRIDEXALG = 1)
-# Run SIDD algorithm
+## RUN PSE ALGORITHM ##
+# Set Parameters for PSE algorithm
+algInfo <- rGetAlgInfo(nSwarm = 32, maxIter = 100, 
+                       MIX_C = 1, MIX_R = 0)
+
+# Run PSE algorithm
 res <- rDiscreteDesignPSO(algInfo, designInfo, if_parallel = TRUE, 
                           seed = NULL, verbose = TRUE)
-names(res)
+#names(res)
+res$RES$fGBest # Global Best AF-bar-optimal criterion value
+res$RES$GBest  # Global Best AF-bar-optimal design
 
-res$RES$fGBest
-res$RES$fPBest
-res$RES$fGBestHist
-res$RES$fPBestHist
+## RUN CP ALGORITHM ##
+# Set Parameters for Columnwise-Pairwise (CP) algorithm
+cpAlgInfo <- rGetColPairInfo(maxIter = 100, nTry = 32, 
+                             CPk = 1)
 
-res$RES$fPBestHist[,1:5]
-res$RES$fPBestHist[,ncol(res$RES$fPBestHist)]
-
-# Set Columnwise-Pairwise (CP) algorithm
-cpAlgInfo <- rGetColPairInfo(maxIter = 100, nTry = 32, CPk = 1)
 # Run CP algorithm
-cpRes <- rDiscreteDesignColPair(cpAlgInfo, designInfo, if_parallel = TRUE, seed = NULL, verbose = TRUE)
-names(cpRes)
+cpRes <- rDiscreteDesignColPair(cpAlgInfo, designInfo, if_parallel = TRUE, 
+                                seed = NULL, verbose = TRUE)
+#names(cpRes)
+cpRes$RES$DESIGN_VAL # Overall Best AF-bar-optimal criterion value among multiple trails
+cpRes$RES$DESIGN     # Overall Best AF-bar-optimal design among multiple trails
 
 
-### Non-regular Design ###
-# The example runs for the non-regular design of n = 12, m = 4 for MEPI space with g = 1.
+### Unbalanced Design ###
+
+# The example is the AF-bar-optimal unbalanced design 
+# of n = 12, m = 4 for MEPI space with g = 2.
 designInfo <- rGetDesignInfo(typeCrit = 1, n = 12, m = 4, 
-                             mSpName = "MEPI", g = 1,
+                             mSpName = "MEPI", g = 2,
                              balance = 0)
 
-# Set SIDD algorithm
-algInfo <- rGetAlgInfo(nSwarm = 32, maxIter = 100, PSO_UPDATE = 0,  
-                       JFO_R0 = 0.9, JFO_R1 = 0.3, MIX_C = 1, MIX_R = 1,
-                       HYBRIDEXALG = 1)
-# Run SIDD algorithm
-res <- rDiscreteDesignPSO(algInfo, designInfo, if_parallel = TRUE, seed = NULL, verbose = TRUE)
-names(res)
+## RUN PSE ALGORITHM ##
+# Set Parameters for PSE algorithm
+algInfo <- rGetAlgInfo(nSwarm = 32, maxIter = 100, 
+                       MIX_C = 1, MIX_R = 1)
 
-res$RES$fGBest
+# Run PSE algorithm
+res <- rDiscreteDesignPSO(algInfo, designInfo, if_parallel = TRUE, 
+                          seed = NULL, verbose = TRUE)
+#names(res)
+res$RES$fGBest # Global Best AF-bar-optimal criterion value
+res$RES$GBest  # Global Best AF-bar-optimal design
 
-# Set JFO algorithm
-jfoAlgInfo <- rGetAlgInfo(nSwarm = 32, maxIter = 100, PSO_UPDATE = 0,  
-                          JFO_R0 = 0.9, JFO_R1 = 0.3)
-# Run JFO algorithm
-jfoRes <- rDiscreteDesignPSO(jfoAlgInfo, designInfo, if_parallel = TRUE, seed = NULL, verbose = TRUE)
-names(jfoRes)
 
-# Set Coordinate Exchange (CE) algorithm
+## RUN CE ALGORITHM ##
+# Set Parameters for Coordinate Exchange (CE) algorithm
 ceAlgInfo <- rGetCoorExInfo(maxIter = 100, nTry = 32)
 # Run CE algorithm
-ceRes <- rDiscreteDesignCoorEx(ceAlgInfo, designInfo, if_parallel = TRUE, seed = NULL, verbose = TRUE)
-names(ceRes)
-
-ceRes$RES$DESIGN
-ceRes$RES$DESIGN_VAL
+ceRes <- rDiscreteDesignCoorEx(ceAlgInfo, designInfo, if_parallel = TRUE, 
+                               seed = NULL, verbose = TRUE)
+#names(ceRes)
+ceRes$RES$DESIGN_VAL # Overall Best AF-bar-optimal criterion value among multiple trails
+ceRes$RES$DESIGN     # Overall Best AF-bar-optimal design among multiple trails
