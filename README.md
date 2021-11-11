@@ -14,7 +14,7 @@ There is a R function, `rDiscreteDesignPSO`, coded based on the PSE algorithm. B
 
 | `rGetDesignInfo` <br> Input Option | Description | Default Value |
 | ----------------------------- | ----------- | ------------- |
-| `typeCrit` | **Model-discrimination Designs** <br> `1`:  $\overline{AF}$ criterion <br> `2`: $\overline{EPD}$ criterion <br> `3`: Negative $\overline{A^S}$ criterion <br> `4`:  $\overline{ENCP}$ criterion <br> **Model-robust Designs** <br> `0`: Estimation capacity criterion <br> `5`:  Information capacity criterion | -- |
+| `typeCrit` | **Model-discrimination Designs** <br> `1`: ![formula](https://render.githubusercontent.com/render/math?math=\color{white}\overline{AF}) criterion <br> `2`: ![formula](https://render.githubusercontent.com/render/math?math=\color{white}\overline{EPD}) criterion <br> `3`: Negative ![formula](https://render.githubusercontent.com/render/math?math=\color{white}\overline{A^S}) criterion <br> `4`:  ![formula](https://render.githubusercontent.com/render/math?math=\color{white}\overline{ENCP}) criterion <br> **Model-robust Designs** <br> `0`: Estimation capacity criterion <br> `5`:  Information capacity criterion | -- |
 | `n`        | (Positive integer) Run size                     | -- |
 | `m`        | (Positive integer) Number of factors            | -- |
 | `mSpName`  | `'MEPI'`: MEPI space <br> `'PMS'`: PMS space    | -- |
@@ -39,9 +39,19 @@ algInfo <- rGetAlgInfo(nSwarm, maxIter, MIX_C = 1, MIX_R = 1, JFO_RV = 1.0, JFO_
 | `MIX_C`   | (Positive integer) the number of columns to be exchanged in the COLMIX operator | 1 |
 | `MIX_R`   | (Positive integer) the number of rows to be exchanged in the ROWMIX operator    | 1 |
 | `JFO_R0`  | ![formula](https://render.githubusercontent.com/render/math?math=\color{white}\omega_{max}) | 0.9 |
-| `JFO_R1`  | $\omega_{min}$ | 0.3 |
-| `JFO_RHO` | $\rho$         | 0.5 |
-| `JFO_RV`  | the proportion of PSE updating iterations by updating  $\omega^{(t)}$ | 1.0 |
+| `JFO_R1`  | ![formula](https://render.githubusercontent.com/render/math?math=\color{white}\omega_{min}) | 0.3 |
+| `JFO_RHO` | ![formula](https://render.githubusercontent.com/render/math?math=\color{white}\rho)        | 0.5 |
+| `JFO_RV`  | the proportion of PSE updating iterations by updating  ![formula](https://render.githubusercontent.com/render/math?math=\color{white}\omega^{(t)}) | 1.0 |
+
+![formula](https://render.githubusercontent.com/render/math?math=\color{white}\omega^{(t)}=\omega_{max}-\frac{t-1}{t_{max}-1}(\omega_{max}-\omega_{min}))
+
+
+![formula](https://render.githubusercontent.com/render/math?math=\color{white}\omega^{(t)}_L=\rho(1-\omega^{(t)}),\omega^{(t)}_G=(1-\rho)(1-\omega^{(t)}))
+
+
+
+
+
 
 ```{r}
 rDiscreteDesignPSO <- function(algInfo, designInfo, if_parallel = TRUE, seed = NULL, verbose = TRUE)
