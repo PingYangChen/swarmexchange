@@ -1,16 +1,29 @@
 # Particle Swarm Exchange Algorithm for Model-Discrimination Designs
 
-This is the user guide of the Particle Swarm Exchange Algorithm
+This document is the user guide for using particle swarm exchange (PSE) algorithm (Chen et al., 2021+) and the exchange type algorithms (Meyer and Nachtsheim, 1995; Li and Wu, 1997) to generate the model-discrimination designs.  For the fundemental math expression of the model-discrimination design, please refer to the article and [**our catalog website**](https://pingyangchen.github.io/swarmexchange/).
 
-[**CLICK HERE**](https://pingyangchen.github.io/swarmexchange/)
+To generate the model-discrimination designs, there are three steps:
+1. Specify the design problem by the `rGetDesignInfo` function. 
+2. Setup the parameters of the PSE algorithm by the  `rGetAlgInfo` function.
+3. Run the PSE algorithm by the `rDiscreteDesignPSO` function.
 
-There is a R function, `rDiscreteDesignPSO`, coded based on the PSE algorithm. Before implementing `rDiscreteDesignPSO`, we need to specify the design problem through  `rGetDesignInfo`, and set up the proper tuning parameters for PSE via  `rGetAlgInfo`. We would introduce these three R functions in the following.
+To run the columnwise-pairwise (CP) exchange algorithm (Li and Wu, 1997) for searching the balanced design, use functions `rGetColPairInfo` and `rDiscreteDesignColPair` in Steps 2 and 3. To run the coordinate exchange algorithm (Meyer and Nachtsheim, 1995) for searching the unbalanced design, use functions `rGetCoorExInfo` and `rDiscreteDesignCoorEx` in Steps 2 and 3. 
 
+
+#### Reference
 - Chen, P.-Y., Chen, R.-B., Li, J.-P. and Li, W. W. (2021+). Particle Swarm Exchange Algorithms with Applications in Generating Optimal Model-Discrimination Designs. *Preprint*.
+- Li, W., & Wu, C. F. J. (1997). Columnwise-pairwise algorithms with applications to the construction of supersaturated designs. Technometrics, 39 (2), 171–179.
+- Meyer, R. K., & Nachtsheim, C. J. (1995). The coordinate-exchange algorithm for constructing exact optimal experimental designs. Technometrics, 37 (1), 60–69.
 
-## Design Requirements Setting
 
-`rGetDesignInfo`
+
+## Design Problem Specification
+
+`rGetDesignInfo`: the function of specifying the model-discrimination problem. 
+
+```{r}
+rGetDesignInfo(typeCrit, n, m, mSpName = c("MEPI", "PMS"), g = 1, q = 1, labLevel = c(-1, 1), balance = 0)
+```
 
 | `rGetDesignInfo` <br> Input Option | Description | Default Value |
 | ----------------------------- | ----------- | ------------- |
@@ -27,7 +40,7 @@ There is a R function, `rDiscreteDesignPSO`, coded based on the PSE algorithm. B
 
 ## Particle Swarm Exchange Algorithm
 
-`rGetAlgInfo`: the configuration of the PSE algorithm
+`rGetAlgInfo`: the function for configuring the particle swarm exchange algorithm.
 ```{r}
 algInfo <- rGetAlgInfo(nSwarm, maxIter, MIX_C = 1, MIX_R = 1, JFO_RV = 1.0, JFO_R0 = 0.9, JFO_R1 = 0.3, JFO_RHO = 0.5)
 ```
@@ -38,23 +51,25 @@ algInfo <- rGetAlgInfo(nSwarm, maxIter, MIX_C = 1, MIX_R = 1, JFO_RV = 1.0, JFO_
 | `maxIter` | (Positive integer) the number of iterations  | -- |
 | `MIX_C`   | (Positive integer) the number of columns to be exchanged in the COLMIX operator | 1 |
 | `MIX_R`   | (Positive integer) the number of rows to be exchanged in the ROWMIX operator    | 1 |
-| `JFO_R0`  | ![formula](https://render.githubusercontent.com/render/math?math=\color{white}\omega_{max}) | 0.9 |
-| `JFO_R1`  | ![formula](https://render.githubusercontent.com/render/math?math=\color{white}\omega_{min}) | 0.3 |
-| `JFO_RHO` | ![formula](https://render.githubusercontent.com/render/math?math=\color{white}\rho)        | 0.5 |
+| `JFO_R0`  | The value of ![formula](https://render.githubusercontent.com/render/math?math=\color{white}\omega_{max}) &ast; | 0.9 |
+| `JFO_R1`  | The value of ![formula](https://render.githubusercontent.com/render/math?math=\color{white}\omega_{min}) &ast; | 0.3 |
+| `JFO_RHO` | The value of ![formula](https://render.githubusercontent.com/render/math?math=\color{white}\rho)        &ast; | 0.5 |
 | `JFO_RV`  | the proportion of PSE updating iterations by updating  ![formula](https://render.githubusercontent.com/render/math?math=\color{white}\omega^{(t)}) | 1.0 |
+
+&ast; The parameters ![formula](https://render.githubusercontent.com/render/math?math=\color{white}\omega_{max},\omega_{min}) and ![formula](https://render.githubusercontent.com/render/math?math=\color{white}\rho) are used to compute the probabilities
 
 ![formula](https://render.githubusercontent.com/render/math?math=\color{white}\omega^{(t)}=\omega_{max}-\frac{t-1}{t_{max}-1}(\omega_{max}-\omega_{min}))
 
-
 ![formula](https://render.githubusercontent.com/render/math?math=\color{white}\omega^{(t)}_L=\rho(1-\omega^{(t)}),\omega^{(t)}_G=(1-\rho)(1-\omega^{(t)}))
 
+to choose the target design to be mixed with the current design among random design, local best design and global best design. `JFO_RV` is between 0 and 1 and is used to denote the proportion of PSE updating iterations by updating ![formula](https://render.githubusercontent.com/render/math?math=\color{white}\omega^{(t)}). For example, `JFO_RV=0.8` indicates that ![formula](https://render.githubusercontent.com/render/math?math=\color{white}\omega^{(t)}) is updated by the above equations in the first 80% of the PSE iterations, and then, it is fixed as ![formula](https://render.githubusercontent.com/render/math?math=\color{white}\omega_{min}) for the remaining 20% iterations.
 
 
 
-
+`rDiscreteDesignPSO`: the function for running the particle swarm exchange algorithm.
 
 ```{r}
-rDiscreteDesignPSO <- function(algInfo, designInfo, if_parallel = TRUE, seed = NULL, verbose = TRUE)
+rDiscreteDesignPSO(algInfo, designInfo, if_parallel = TRUE, seed = NULL, verbose = TRUE)
 ```
 
 | `rDiscreteDesignPSO` <br> Input Option | Description | Default Value |
@@ -71,7 +86,8 @@ rDiscreteDesignPSO <- function(algInfo, designInfo, if_parallel = TRUE, seed = N
 
 ### Columnwise-pairwise Exchange Algorithm
 
-`rGetColPairInfo`
+
+`rGetColPairInfo`: the function for configuring the columnwise-pairwise exchange algorithm.
 
 ```{r}
 rGetColPairInfo(maxIter = 50, nTry = 1, maximize = 1, CPk = 1, tol = 0)
@@ -86,6 +102,7 @@ rGetColPairInfo(maxIter = 50, nTry = 1, maximize = 1, CPk = 1, tol = 0)
 | `tol`      | (Positive real value) stopping criterion. Set `tol = 0` for disabling | 0 |
 
 
+`rDiscreteDesignColPair`: the function for running the columnwise-pairwise exchange algorithm.
 
 ```{r}
 rDiscreteDesignColPair(algInfo, designInfo, if_parallel = TRUE, seed = NULL, verbose = TRUE)
@@ -102,6 +119,7 @@ rDiscreteDesignColPair(algInfo, designInfo, if_parallel = TRUE, seed = NULL, ver
 
 ### Coordinate Exchange Algorithm
 
+`rGetCoorExInfo`: the function for configuring the coordinate exchange algorithm.
 
 ```{r}
 rGetCoorExInfo(maxIter = 50, nTry = 1, maximize = 1, tol = 0)
@@ -115,6 +133,7 @@ rGetCoorExInfo(maxIter = 50, nTry = 1, maximize = 1, tol = 0)
 | `tol`      | (Positive real value) stopping criterion. Set `tol = 0` for disabling | 0 |
 
 
+`rDiscreteDesignCoorEx`: the function for running the coordinate exchange algorithm.
 
 ```{r}
 rDiscreteDesignCoorEx(algInfo, designInfo, if_parallel = TRUE, seed = NULL, verbose = TRUE)
@@ -145,7 +164,7 @@ The R script **run.R** is an example to use the PSE codes. The first step is to 
 
 
 In PSE algorithm, user first needs to decide the number of particles, \texttt{nSwarm}, and the number of iterations, \texttt{maxIter}. Larger values of them may result the better designs, but the computational cost is higher.
-\texttt{MIX\_C} is the number of columns to be exchanged in the COLMIX operator, and its default value is . Please see Section \ref{sec:pseconf} for details.  \texttt{MIX\_R} is the number of rows to be exchanged in the ROWMIX operator and its default value is fixed as 1. The parameters, \texttt{JFO\_R1}, \texttt{JFO\_R0} and \texttt{JFO\_RHO}, are the probability values, $\omega_{max}$, $\omega_{min}$ and $\rho$ for the MIX operator shown in \eqref{eq:inertia1} and \eqref{eq:inertia2}. Their default values are set as follows, $\omega_{max} = 0.9$, $\omega_{min} = 0.3$ and $\rho = 0.5$. \texttt{JFO\_RV} is between 0 and 1 and is used to denote the proportion of PSE updating iterations by updating  $\omega^{(t)}$ via \eqref{eq:inertia1} and \eqref{eq:inertia2}. For example, \texttt{JFO\_RV = 0.8} indicates that $\omega^{(t)}$ is updated by \eqref{eq:inertia1} and \eqref{eq:inertia2} in the first 80\% of the PSE iterations, and then, $\omega^{(t)}$ is fixed as $\omega_{min}$ for the remaining 20\% iterations.
+\texttt{MIX\_C} is the number of columns to be exchanged in the COLMIX operator, and its default value is . Please see Section \ref{sec:pseconf} for details.  \texttt{MIX\_R} is the number of rows to be exchanged in the ROWMIX operator and its default value is fixed as 1. The parameters, \texttt{JFO\_R1}, \texttt{JFO\_R0} and \texttt{JFO\_RHO}, are the probability values, $\omega_{max}$, $\omega_{min}$ and $\rho$ for the MIX operator shown in \eqref{eq:inertia1} and \eqref{eq:inertia2}. Their default values are set as follows, $\omega_{max} = 0.9$, $\omega_{min} = 0.3$ and $\rho = 0.5$. 
 Suppose we want to implement the PSE algorithm with 1000 iterations and 100 particles. In addition, the number of the columns for COLMIX operator is set as 4 and we decide not to involve ROWMIX operator. The others are fixed as the defaulty values. Therefore, we should have the PSE information as follows.\\ 
 %\noindent
 \texttt{algInfo <- rGetAlgInfo(100, 1000, 4, 0)}\\
