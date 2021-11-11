@@ -1,15 +1,3 @@
-<head>
-  <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
-  <script type="text/x-mathjax-config">
-    MathJax.Hub.Config({
-      tex2jax: {
-      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
-      inlineMath: [['$','$']]
-      }
-    });
-  </script>
-</head>
-
 # Particle Swarm Exchange Algorithm for Model-Discrimination Designs
 
 This is the user guide of the Particle Swarm Exchange Algorithm
@@ -50,7 +38,7 @@ algInfo <- rGetAlgInfo(nSwarm, maxIter, MIX_C = 1, MIX_R = 1, JFO_RV = 1.0, JFO_
 | `maxIter` | (Positive integer) the number of iterations  | -- |
 | `MIX_C`   | (Positive integer) the number of columns to be exchanged in the COLMIX operator | 1 |
 | `MIX_R`   | (Positive integer) the number of rows to be exchanged in the ROWMIX operator    | 1 |
-| `JFO_R0`  | $\omega_{max}$ | 0.9 |
+| `JFO_R0`  | ![formula](https://render.githubusercontent.com/render/math?math=\color{white}\omega_{max}) | 0.9 |
 | `JFO_R1`  | $\omega_{min}$ | 0.3 |
 | `JFO_RHO` | $\rho$         | 0.5 |
 | `JFO_RV`  | the proportion of PSE updating iterations by updating  $\omega^{(t)}$ | 1.0 |
