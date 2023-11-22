@@ -37,7 +37,7 @@ rGetDesignInfo(typeCrit, n, m, mSpName = c("MEPI", "PMS"), g = 1, q = 1, labLeve
 
 | `rGetDesignInfo` <br> Input Option | Description | Default Value |
 | ----------------------------- | ----------- | ------------- |
-| `typeCrit` | **Model-discrimination Designs** <br> `1`: ![formula](https://render.githubusercontent.com/render/math?math=\color{white}\overline{AF}) criterion <br> `2`: ![formula](https://render.githubusercontent.com/render/math?math=\color{white}\overline{EPD}) criterion <br> `3`: Negative ![formula](https://render.githubusercontent.com/render/math?math=\color{white}\overline{A^S}) criterion <br> `4`:  ![formula](https://render.githubusercontent.com/render/math?math=\color{white}\overline{ENCP}) criterion <br> **Model-robust Designs** <br> `0`: Estimation capacity criterion <br> `5`:  Information capacity criterion | -- |
+| `typeCrit` | **Model-discrimination Designs** <br> `1`: $\overline{AF}$ criterion <br> `2`: ![formula](https://render.githubusercontent.com/render/math?math=\color{white}\overline{EPD}) criterion <br> `3`: Negative ![formula](https://render.githubusercontent.com/render/math?math=\color{white}\overline{A^S}) criterion <br> `4`:  ![formula](https://render.githubusercontent.com/render/math?math=\color{white}\overline{ENCP}) criterion <br> **Model-robust Designs** <br> `0`: Estimation capacity criterion <br> `5`:  Information capacity criterion | -- |
 | `n`        | (Positive integer) Run size                     | -- |
 | `m`        | (Positive integer) Number of factors            | -- |
 | `mSpName`  | `'MEPI'`: MEPI space <br> `'PMS'`: PMS space    | -- |
