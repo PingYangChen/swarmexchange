@@ -37,7 +37,7 @@ rGetDesignInfo(typeCrit, n, m, mSpName = c("MEPI", "PMS"), g = 1, q = 1, labLeve
 
 | `rGetDesignInfo` <br> Input Option | Description | Default Value |
 | ----------------------------- | ----------- | ------------- |
-| `typeCrit` | **Model-discrimination Designs** <br> `1`: $\overline{AF}$ criterion <br> `2`: ![formula](https://render.githubusercontent.com/render/math?math=\color{white}\overline{EPD}) criterion <br> `3`: Negative ![formula](https://render.githubusercontent.com/render/math?math=\color{white}\overline{A^S}) criterion <br> `4`:  ![formula](https://render.githubusercontent.com/render/math?math=\color{white}\overline{ENCP}) criterion <br> **Model-robust Designs** <br> `0`: Estimation capacity criterion <br> `5`:  Information capacity criterion | -- |
+| `typeCrit` | **Model-discrimination Designs** <br> `1`: $\overline{AF}$ criterion <br> `2`: $\overline{EPD}$ criterion <br> `3`: Negative $\overline{A^S}$ criterion <br> `4`:  $\overline{ENCP}$ criterion <br> **Model-robust Designs** <br> `0`: Estimation capacity criterion <br> `5`:  Information capacity criterion | -- |
 | `n`        | (Positive integer) Run size                     | -- |
 | `m`        | (Positive integer) Number of factors            | -- |
 | `mSpName`  | `'MEPI'`: MEPI space <br> `'PMS'`: PMS space    | -- |
@@ -61,18 +61,18 @@ algInfo <- rGetAlgInfo(nSwarm, maxIter, MIX_C = 1, MIX_R = 1, JFO_RV = 1.0, JFO_
 | `maxIter` | (Positive integer) the number of iterations  | -- |
 | `MIX_C`   | (Positive integer) the number of columns to be exchanged in the COLMIX operator | 1 |
 | `MIX_R`   | (Positive integer) the number of rows to be exchanged in the ROWMIX operator    | 1 |
-| `JFO_R0`  | The value of ![formula](https://render.githubusercontent.com/render/math?math=\color{white}\omega_{max}) &ast; | 0.9 |
-| `JFO_R1`  | The value of ![formula](https://render.githubusercontent.com/render/math?math=\color{white}\omega_{min}) &ast; | 0.3 |
-| `JFO_RHO` | The value of ![formula](https://render.githubusercontent.com/render/math?math=\color{white}\rho)        &ast; | 0.5 |
-| `JFO_RV`  | the proportion of PSE updating iterations by updating  ![formula](https://render.githubusercontent.com/render/math?math=\color{white}\omega^{(t)}) | 1.0 |
+| `JFO_R0`  | The value of $\omega_{max}$ &ast; | 0.9 |
+| `JFO_R1`  | The value of $\omega_{min}$ &ast; | 0.3 |
+| `JFO_RHO` | The value of $\rho$        &ast; | 0.5 |
+| `JFO_RV`  | the proportion of PSE updating iterations by updating  $\omega^{(t)}$ | 1.0 |
 
-&ast; The parameters ![formula](https://render.githubusercontent.com/render/math?math=\color{white}\omega_{max},\omega_{min}) and ![formula](https://render.githubusercontent.com/render/math?math=\color{white}\rho) are used to compute the probabilities
+&ast; The parameters $\omega_{max},\omega_{min}$ and $\rho$ are used to compute the probabilities
 
-![formula](https://render.githubusercontent.com/render/math?math=\color{white}\omega^{(t)}=\omega_{max}-\frac{t-1}{t_{max}-1}(\omega_{max}-\omega_{min}))
+$$\omega^{(t)}=\omega_{max}-\frac{t-1}{t_{max}-1}(\omega_{max}-\omega_{min})$$
 
-![formula](https://render.githubusercontent.com/render/math?math=\color{white}\omega^{(t)}_L=\rho(1-\omega^{(t)}),\omega^{(t)}_G=(1-\rho)(1-\omega^{(t)}))
+$$\omega^{(t)}_L=\rho(1-\omega^{(t)}),\omega^{(t)}_G=(1-\rho)(1-\omega^{(t)})$$
 
-to choose the target design to be mixed with the current design among random design, local best design and global best design. `JFO_RV` is between 0 and 1 and is used to denote the proportion of PSE updating iterations by updating ![formula](https://render.githubusercontent.com/render/math?math=\color{white}\omega^{(t)}). For example, `JFO_RV=0.8` indicates that ![formula](https://render.githubusercontent.com/render/math?math=\color{white}\omega^{(t)}) is updated by the above equations in the first 80% of the PSE iterations, and then, it is fixed as ![formula](https://render.githubusercontent.com/render/math?math=\color{white}\omega_{min}) for the remaining 20% iterations.
+to choose the target design to be mixed with the current design among random design, local best design and global best design. `JFO_RV` is between 0 and 1 and is used to denote the proportion of PSE updating iterations by updating $\omega^{(t)}$. For example, `JFO_RV=0.8` indicates that $\omega^{(t)}$ is updated by the above equations in the first 80% of the PSE iterations, and then, it is fixed as $\omega_{min}$ for the remaining 20% iterations.
 
 
 
@@ -161,7 +161,7 @@ rDiscreteDesignCoorEx(algInfo, designInfo, if_parallel = TRUE, seed = NULL, verb
 
 ## Illustrative Example
 
-The R script [**run.R**](https://github.com/PingYangChen/swarmexchange/blob/master/run.R) is an example to use the PSE codes.  Suppose target on searching a balanced two-level ![formula](https://render.githubusercontent.com/render/math?math=\color{white}12\times4\overline{AF})-optimal design for discriminating among ![formula](https://render.githubusercontent.com/render/math?math=\color{white}MEPI_2) model space. 
+The R script [**run.R**](https://github.com/PingYangChen/swarmexchange/blob/master/run.R) is an example to use the PSE codes.  Suppose target on searching a balanced two-level $12\times4\overline{AF}$-optimal design for discriminating among $MEPI_2$ model space. 
 
 
 The first step is to determine the model-discrimination design problem through the `rGetDesignInfo` function.
